@@ -10,13 +10,29 @@ import { RuntimeStatusOverlay } from '../components/runtime/RuntimeStatusOverlay
 export struct RunPage {
   private store: RuntimeSessionStore = new RuntimeSessionStore()
 
+  private onBack(): void {
+    console.info('TODO: back to AppListPage')
+  }
+
+  private async onRestart(): Promise<void> {
+    await this.store.restartSession()
+  }
+
+  private async onExit(): Promise<void> {
+    await this.store.stopSession()
+  }
+
   build() {
     Column() {
       PageHeader({ title: '运行页' })
       if (this.store.error) {
         StatusBanner({ text: this.store.error.message })
       }
-      RuntimeToolbar()
+      RuntimeToolbar({
+        onBack: () => this.onBack(),
+        onRestart: () => this.onRestart(),
+        onExit: () => this.onExit()
+      })
       RuntimeContainer()
       if (this.store.phase !== 'running') {
         RuntimeStatusOverlay({ text: `当前状态：${this.store.phase}` })

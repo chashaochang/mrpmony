@@ -10,13 +10,18 @@ import { ImportResultPanel } from '../components/import/ImportResultPanel'
 export struct ImportPage {
   private store: ImportStore = new ImportStore()
 
+  private async onPickFile(): Promise<void> {
+    await this.store.pickFile()
+    await this.store.analyzeSelectedFile()
+  }
+
   build() {
     Column() {
       PageHeader({ title: '导入应用' })
       if (this.store.error) {
         StatusBanner({ text: this.store.error.message })
       }
-      ImportSourceSelector()
+      ImportSourceSelector({ onPick: () => this.onPickFile() })
       if (this.store.previewInfo) {
         PackagePreviewCard({ name: this.store.previewInfo.name })
       }

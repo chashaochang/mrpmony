@@ -15,6 +15,10 @@ struct AppListPage {
     this.store.loadApps()
   }
 
+  private openImportPage(): void {
+    console.info('TODO: open ImportPage')
+  }
+
   build() {
     Column() {
       PageHeader({ title: '应用列表' })
@@ -25,7 +29,7 @@ struct AppListPage {
         LoadingBlock({ text: '正在加载应用列表' })
       } else if (this.store.items.length === 0) {
         EmptyState({ text: '暂无已导入应用' })
-        ImportEntryButton()
+        ImportEntryButton({ onTap: () => this.openImportPage() })
       } else {
         AppListView({ items: this.store.items })
       }
