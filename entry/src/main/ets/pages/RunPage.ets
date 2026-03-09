@@ -45,6 +45,10 @@ export struct RunPage {
     await this.store.restartSession()
   }
 
+  private async onPullFrame(): Promise<void> {
+    await this.store.refreshFrame()
+  }
+
   private async onExit(): Promise<void> {
     await this.store.stopSession()
     if (this.onBack) {
@@ -65,12 +69,20 @@ export struct RunPage {
       }
       RuntimeToolbar({
         canRestart: this.store.canRestart,
+        canPullFrame: this.store.phase === 'running',
         canExit: this.store.canExit,
         onBack: () => this.onBackClick(),
         onRestart: () => this.onRestart(),
+        onPullFrame: () => this.onPullFrame(),
         onExit: () => this.onExit()
       })
-      RuntimeContainer({ hint: this.store.runtimeHint })
+      RuntimeContainer({
+        hint: this.store.runtimeHint,
+        hasFrame: this.store.frame.hasFrame,
+        frameId: this.store.frame.frameId,
+        frameWidth: this.store.frame.width,
+        frameHeight: this.store.frame.height,
+      })
       if (this.store.phase !== 'running') {
         RuntimeStatusOverlay({ text: `当前状态：${this.store.phase}` })
       }

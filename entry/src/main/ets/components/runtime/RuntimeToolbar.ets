@@ -2,8 +2,10 @@
 export struct RuntimeToolbar {
   onBack?: () => void
   onRestart?: () => void
+  onPullFrame?: () => void
   onExit?: () => void
   @Prop canRestart: boolean = true
+  @Prop canPullFrame: boolean = true
   @Prop canExit: boolean = true
 
   build() {
@@ -18,6 +20,13 @@ export struct RuntimeToolbar {
         .onClick(() => {
           if (this.onRestart) {
             this.onRestart()
+          }
+        })
+      Button('拉帧')
+        .enabled(this.canPullFrame)
+        .onClick(() => {
+          if (this.onPullFrame) {
+            this.onPullFrame()
           }
         })
       Button('退出')

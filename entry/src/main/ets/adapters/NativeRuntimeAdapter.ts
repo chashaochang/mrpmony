@@ -1,5 +1,17 @@
 import nativeMrp from 'libmrp_napi.so'
 
+export interface NativeFrameDTO {
+  ok: boolean
+  hasNewFrame: boolean
+  width: number
+  height: number
+  pixelFormat: 'RGBA_8888'
+  buffer?: ArrayBuffer
+  frameId?: number
+  errorCode?: number
+  errorMessage?: string
+}
+
 function assertOk(result: { ok: boolean; errorCode?: number; errorMessage?: string }, action: string): void {
   if (!result.ok) {
     throw new Error(`${action} failed: ${result.errorCode ?? -1} ${result.errorMessage ?? ''}`.trim())
@@ -25,6 +37,10 @@ export class NativeRuntimeAdapter {
 
   async stopSession(): Promise<void> {
     assertOk(nativeMrp.release(), 'release')
+  }
+
+  async pullFrame(): Promise<NativeFrameDTO> {
+    return nativeMrp.pullFrame() as NativeFrameDTO
   }
 
   async notifyPageShow(): Promise<void> {
