@@ -1,0 +1,25 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Build
+build/
+dist/
+out/
+node_modules/
+
+# HarmonyOS / DevEco common outputs
+.local/
+.cache/
+
+# Logs
+*.log
+
+# Temp
+.tmp/
+tmp/
