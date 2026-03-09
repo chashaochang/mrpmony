@@ -6,9 +6,11 @@ import { StatusBanner } from '../components/common/StatusBanner'
 import { ImportEntryButton } from '../components/appList/ImportEntryButton'
 import { AppListView } from '../components/appList/AppListView'
 
-@Entry
 @Component
-struct AppListPage {
+export struct AppListPage {
+  onNavigateImport?: () => void
+  onNavigateRun?: (appId: string) => void
+
   @State refreshTick: number = 0
   @State selectedAppId: string = ''
   private store: AppCatalogStore = new AppCatalogStore()
@@ -31,11 +33,19 @@ struct AppListPage {
   }
 
   private openImportPage(): void {
+    if (this.onNavigateImport) {
+      this.onNavigateImport()
+      return
+    }
     console.info('TODO: open ImportPage')
   }
 
   private openRunPage(appId: string): void {
     this.selectedAppId = appId
+    if (this.onNavigateRun) {
+      this.onNavigateRun(appId)
+      return
+    }
     console.info(`TODO: open RunPage for ${appId}`)
   }
 

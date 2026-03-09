@@ -8,6 +8,9 @@ import { ImportResultPanel } from '../components/import/ImportResultPanel'
 
 @Component
 export struct ImportPage {
+  onBack?: () => void
+  onImportSuccess?: () => void
+
   @State refreshTick: number = 0
   private store: ImportStore = new ImportStore()
   private unsubscribe?: () => void
@@ -34,12 +37,20 @@ export struct ImportPage {
 
   private async onImport(): Promise<void> {
     await this.store.startImport()
+    if (this.store.phase === 'success' && this.onImportSuccess) {
+      this.onImportSuccess()
+    }
   }
 
   build() {
     Column() {
       Text(`${this.refreshTick}`).fontSize(1).opacity(0)
       PageHeader({ title: '导入应用' })
+      if (this.onBack) {
+        Button('返回列表').onClick(() => {
+          this.onBack && this.onBack()
+        }).margin({ bottom: 8, left: 16, right: 16 })
+      }
       if (this.store.error) {
         StatusBanner({ text: this.store.error.message })
       }
@@ -48,13 +59,13 @@ export struct ImportPage {
         PackagePreviewCard({ name: this.store.previewInfo.name })
         Button('开始导入').onClick(() => {
           this.onImport()
-        })
+        }).margin(16)
       }
       if (this.store.phase === 'importing') {
         ImportProgressPanel({ text: '导入中' })
       }
       if (this.store.phase === 'success') {
-        ImportResultPanel({ text: '导入成功' })
+        ImportResultPanel({ text: '导入成功，正在返回列表' })
       }
       if (this.store.phase === 'failed') {
         ImportResultPanel({ text: '导入失败' })

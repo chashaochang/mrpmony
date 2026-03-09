@@ -8,6 +8,9 @@ import { RuntimeStatusOverlay } from '../components/runtime/RuntimeStatusOverlay
 
 @Component
 export struct RunPage {
+  appId?: string
+  onBack?: () => void
+
   @State refreshTick: number = 0
   private store: RuntimeSessionStore = new RuntimeSessionStore()
   private unsubscribe?: () => void
@@ -18,6 +21,9 @@ export struct RunPage {
         this.refreshTick += 1
       })
     }
+    if (this.appId) {
+      this.store.startSession(this.appId)
+    }
   }
 
   aboutToDisappear(): void {
@@ -27,7 +33,11 @@ export struct RunPage {
     }
   }
 
-  private onBack(): void {
+  private onBackClick(): void {
+    if (this.onBack) {
+      this.onBack()
+      return
+    }
     console.info('TODO: back to AppListPage')
   }
 
@@ -37,17 +47,23 @@ export struct RunPage {
 
   private async onExit(): Promise<void> {
     await this.store.stopSession()
+    if (this.onBack) {
+      this.onBack()
+    }
   }
 
   build() {
     Column() {
       Text(`${this.refreshTick}`).fontSize(1).opacity(0)
       PageHeader({ title: '运行页' })
+      if (this.appId) {
+        StatusBanner({ text: `当前应用：${this.appId}` })
+      }
       if (this.store.error) {
         StatusBanner({ text: this.store.error.message })
       }
       RuntimeToolbar({
-        onBack: () => this.onBack(),
+        onBack: () => this.onBackClick(),
         onRestart: () => this.onRestart(),
         onExit: () => this.onExit()
       })
