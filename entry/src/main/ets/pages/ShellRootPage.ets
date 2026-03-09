@@ -34,6 +34,7 @@ struct ShellRootPage {
       Text(`${this.catalogRefreshTick}`).fontSize(1).opacity(0)
       if (this.currentRoute === 'appList') {
         AppListPage({
+          refreshToken: this.catalogRefreshTick,
           onNavigateImport: () => this.goToImport(),
           onNavigateRun: (appId: string) => this.goToRun(appId)
         })

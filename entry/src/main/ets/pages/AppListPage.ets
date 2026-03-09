@@ -8,11 +8,13 @@ import { AppListView } from '../components/appList/AppListView'
 
 @Component
 export struct AppListPage {
+  @Prop refreshToken: number = 0
   onNavigateImport?: () => void
   onNavigateRun?: (appId: string) => void
 
   @State refreshTick: number = 0
   @State selectedAppId: string = ''
+  private lastHandledRefreshToken: number = -1
   private store: AppCatalogStore = new AppCatalogStore()
   private unsubscribe?: () => void
 
@@ -30,6 +32,14 @@ export struct AppListPage {
       this.unsubscribe()
       this.unsubscribe = undefined
     }
+  }
+
+  private ensureRefreshByToken(): void {
+    if (this.refreshToken === this.lastHandledRefreshToken) {
+      return
+    }
+    this.lastHandledRefreshToken = this.refreshToken
+    this.store.refreshApps()
   }
 
   private openImportPage(): void {
@@ -50,8 +60,10 @@ export struct AppListPage {
   }
 
   build() {
+    this.ensureRefreshByToken()
+
     Column() {
-      Text(`${this.refreshTick}`).fontSize(1).opacity(0)
+      Text(`${this.refreshTick}-${this.refreshToken}`).fontSize(1).opacity(0)
       PageHeader({ title: '应用列表' })
       if (this.selectedAppId) {
         StatusBanner({ text: `已选择应用：${this.selectedAppId}` })
