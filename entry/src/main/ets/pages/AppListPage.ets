@@ -10,6 +10,7 @@ import { AppListView } from '../components/appList/AppListView'
 @Component
 struct AppListPage {
   @State refreshTick: number = 0
+  @State selectedAppId: string = ''
   private store: AppCatalogStore = new AppCatalogStore()
   private unsubscribe?: () => void
 
@@ -33,10 +34,18 @@ struct AppListPage {
     console.info('TODO: open ImportPage')
   }
 
+  private openRunPage(appId: string): void {
+    this.selectedAppId = appId
+    console.info(`TODO: open RunPage for ${appId}`)
+  }
+
   build() {
     Column() {
       Text(`${this.refreshTick}`).fontSize(1).opacity(0)
       PageHeader({ title: '应用列表' })
+      if (this.selectedAppId) {
+        StatusBanner({ text: `已选择应用：${this.selectedAppId}` })
+      }
       if (this.store.error) {
         StatusBanner({ text: this.store.error.message })
       }
@@ -46,7 +55,10 @@ struct AppListPage {
         EmptyState({ text: '暂无已导入应用' })
         ImportEntryButton({ onTap: () => this.openImportPage() })
       } else {
-        AppListView({ items: this.store.items })
+        AppListView({
+          items: this.store.items,
+          onItemTap: (appId: string) => this.openRunPage(appId)
+        })
       }
     }
     .width('100%')
