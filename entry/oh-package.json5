@@ -1,0 +1,7 @@
+{
+  "modelVersion": "5.0.0",
+  "name": "entry",
+  "version": "1.0.0",
+  "description": "Entry module for MRP simulator HarmonyOS app",
+  "dependencies": {}
+}

@@ -1,0 +1,7 @@
+{
+  "modelVersion": "5.0.0",
+  "name": "mrp-simulator-harmonyos",
+  "version": "1.0.0",
+  "description": "HarmonyOS shell for MRP simulator",
+  "dependencies": {}
+}

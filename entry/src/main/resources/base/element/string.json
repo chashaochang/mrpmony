@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "app_name",
+      "value": "MRP Simulator"
+    },
+    {
+      "name": "module_desc",
+      "value": "MRP simulator HarmonyOS entry module"
+    },
+    {
+      "name": "entry_ability_desc",
+      "value": "MRP simulator entry ability"
+    }
+  ]
+}
