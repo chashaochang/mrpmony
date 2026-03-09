@@ -3,7 +3,6 @@
     "products": [
       {
         "name": "default",
-        "signingConfig": "default",
         "compatibleSdkVersion": "5.0.0(12)",
         "runtimeOS": "HarmonyOS"
       }
@@ -14,20 +13,6 @@
       },
       {
         "name": "release"
-      }
-    ],
-    "signingConfigs": [
-      {
-        "name": "default",
-        "type": "HarmonyOS",
-        "material": {
-          "storeFile": "./AppScope/debug.p12",
-          "storePassword": "123456",
-          "keyAlias": "debugKey",
-          "keyPassword": "123456",
-          "signAlg": "SHA256withECDSA",
-          "profile": "./AppScope/debug.mobileprovision"
-        }
       }
     ]
   },

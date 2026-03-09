@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+set -eu
+
+if [ -x "./node_modules/.bin/hvigor" ]; then
+  exec ./node_modules/.bin/hvigor "$@"
+fi
+
+if command -v hvigor >/dev/null 2>&1; then
+  exec hvigor "$@"
+fi
+
+echo "hvigor not found." >&2
+echo "Open this project in DevEco Studio first, or install hvigor in your environment, then rerun ./hvigorw." >&2
+exit 127

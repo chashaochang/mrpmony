@@ -16,6 +16,9 @@ node_modules/
 # HarmonyOS / DevEco common outputs
 .local/
 .cache/
+local.properties
+AppScope/*.p12
+AppScope/*.mobileprovision
 
 # Logs
 *.log

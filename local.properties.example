@@ -1,0 +1,4 @@
+# Copy this file to local.properties and replace the path with your local HarmonyOS SDK path.
+# Example (Windows): hwsdk.dir=C:\\Users\\you\\Huawei\\Sdk
+# Example (macOS/Linux): hwsdk.dir=/Users/you/Huawei/Sdk
+hwsdk.dir=/absolute/path/to/HarmonyOS/Sdk
