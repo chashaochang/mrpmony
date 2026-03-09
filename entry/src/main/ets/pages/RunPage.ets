@@ -8,7 +8,24 @@ import { RuntimeStatusOverlay } from '../components/runtime/RuntimeStatusOverlay
 
 @Component
 export struct RunPage {
+  @State refreshTick: number = 0
   private store: RuntimeSessionStore = new RuntimeSessionStore()
+  private unsubscribe?: () => void
+
+  aboutToAppear(): void {
+    if (!this.unsubscribe) {
+      this.unsubscribe = this.store.subscribe(() => {
+        this.refreshTick += 1
+      })
+    }
+  }
+
+  aboutToDisappear(): void {
+    if (this.unsubscribe) {
+      this.unsubscribe()
+      this.unsubscribe = undefined
+    }
+  }
 
   private onBack(): void {
     console.info('TODO: back to AppListPage')
@@ -24,6 +41,7 @@ export struct RunPage {
 
   build() {
     Column() {
+      Text(`${this.refreshTick}`).fontSize(1).opacity(0)
       PageHeader({ title: '运行页' })
       if (this.store.error) {
         StatusBanner({ text: this.store.error.message })

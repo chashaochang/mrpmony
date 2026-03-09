@@ -9,10 +9,24 @@ import { AppListView } from '../components/appList/AppListView'
 @Entry
 @Component
 struct AppListPage {
+  @State refreshTick: number = 0
   private store: AppCatalogStore = new AppCatalogStore()
+  private unsubscribe?: () => void
 
   aboutToAppear(): void {
+    if (!this.unsubscribe) {
+      this.unsubscribe = this.store.subscribe(() => {
+        this.refreshTick += 1
+      })
+    }
     this.store.loadApps()
+  }
+
+  aboutToDisappear(): void {
+    if (this.unsubscribe) {
+      this.unsubscribe()
+      this.unsubscribe = undefined
+    }
   }
 
   private openImportPage(): void {
@@ -21,6 +35,7 @@ struct AppListPage {
 
   build() {
     Column() {
+      Text(`${this.refreshTick}`).fontSize(1).opacity(0)
       PageHeader({ title: '应用列表' })
       if (this.store.error) {
         StatusBanner({ text: this.store.error.message })

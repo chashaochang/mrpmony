@@ -1,21 +1,26 @@
 import { ImportService } from '../services/ImportService'
 import type { PackagePreviewVM } from '../models/PackagePreviewVM'
 import type { UiError } from '../models/UiError'
+import { StoreObserver } from './StoreObserver'
 
 export type ImportPhase = 'idle' | 'picking' | 'analyzing' | 'importing' | 'success' | 'failed'
 
-export class ImportStore {
+export class ImportStore extends StoreObserver {
   phase: ImportPhase = 'idle'
   selectedFile: string | null = null
   previewInfo: PackagePreviewVM | null = null
   error: UiError | null = null
 
-  constructor(private readonly service: ImportService = new ImportService()) {}
+  constructor(private readonly service: ImportService = new ImportService()) {
+    super()
+  }
 
   async pickFile(): Promise<void> {
     this.phase = 'picking'
+    this.notify()
     this.selectedFile = await this.service.pickMrpFile()
     this.phase = this.selectedFile ? 'analyzing' : 'idle'
+    this.notify()
   }
 
   async analyzeSelectedFile(): Promise<void> {
@@ -29,6 +34,7 @@ export class ImportStore {
       this.phase = 'failed'
       this.error = { message: '包解析失败', retryable: true }
     }
+    this.notify()
   }
 
   async startImport(): Promise<void> {
@@ -37,6 +43,7 @@ export class ImportStore {
     }
     this.phase = 'importing'
     this.error = null
+    this.notify()
     try {
       await this.service.importPackage(this.selectedFile)
       this.phase = 'success'
@@ -44,6 +51,7 @@ export class ImportStore {
       this.phase = 'failed'
       this.error = { message: '导入失败', retryable: true }
     }
+    this.notify()
   }
 
   reset(): void {
@@ -51,5 +59,6 @@ export class ImportStore {
     this.selectedFile = null
     this.previewInfo = null
     this.error = null
+    this.notify()
   }
 }

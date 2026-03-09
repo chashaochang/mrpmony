@@ -8,15 +8,37 @@ import { ImportResultPanel } from '../components/import/ImportResultPanel'
 
 @Component
 export struct ImportPage {
+  @State refreshTick: number = 0
   private store: ImportStore = new ImportStore()
+  private unsubscribe?: () => void
+
+  aboutToAppear(): void {
+    if (!this.unsubscribe) {
+      this.unsubscribe = this.store.subscribe(() => {
+        this.refreshTick += 1
+      })
+    }
+  }
+
+  aboutToDisappear(): void {
+    if (this.unsubscribe) {
+      this.unsubscribe()
+      this.unsubscribe = undefined
+    }
+  }
 
   private async onPickFile(): Promise<void> {
     await this.store.pickFile()
     await this.store.analyzeSelectedFile()
   }
 
+  private async onImport(): Promise<void> {
+    await this.store.startImport()
+  }
+
   build() {
     Column() {
+      Text(`${this.refreshTick}`).fontSize(1).opacity(0)
       PageHeader({ title: '导入应用' })
       if (this.store.error) {
         StatusBanner({ text: this.store.error.message })
@@ -24,6 +46,9 @@ export struct ImportPage {
       ImportSourceSelector({ onPick: () => this.onPickFile() })
       if (this.store.previewInfo) {
         PackagePreviewCard({ name: this.store.previewInfo.name })
+        Button('开始导入').onClick(() => {
+          this.onImport()
+        })
       }
       if (this.store.phase === 'importing') {
         ImportProgressPanel({ text: '导入中' })
