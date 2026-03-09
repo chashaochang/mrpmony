@@ -59,6 +59,7 @@ export struct RunPage {
       if (this.appId) {
         StatusBanner({ text: `当前应用：${this.appId}` })
       }
+      StatusBanner({ text: this.store.runtimeHint })
       if (this.store.error) {
         StatusBanner({ text: this.store.error.message })
       }
@@ -67,7 +68,7 @@ export struct RunPage {
         onRestart: () => this.onRestart(),
         onExit: () => this.onExit()
       })
-      RuntimeContainer()
+      RuntimeContainer({ hint: this.store.runtimeHint })
       if (this.store.phase !== 'running') {
         RuntimeStatusOverlay({ text: `当前状态：${this.store.phase}` })
       }
