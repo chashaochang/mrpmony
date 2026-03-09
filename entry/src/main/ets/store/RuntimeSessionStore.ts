@@ -18,6 +18,8 @@ export class RuntimeSessionStore extends StoreObserver {
     this.currentAppId = appId
     this.phase = 'starting'
     this.error = null
+    this.canRestart = false
+    this.canExit = false
     this.notify()
     try {
       await this.service.start(appId)
@@ -35,9 +37,15 @@ export class RuntimeSessionStore extends StoreObserver {
     if (!this.currentAppId) {
       return
     }
+    this.phase = 'starting'
+    this.error = null
+    this.canRestart = false
+    this.notify()
     try {
       await this.service.restart(this.currentAppId)
       this.phase = 'running'
+      this.canRestart = true
+      this.canExit = true
     } catch (_error) {
       this.phase = 'error'
       this.error = { message: '重启失败', retryable: true }

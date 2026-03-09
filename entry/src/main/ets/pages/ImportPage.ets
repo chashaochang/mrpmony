@@ -28,6 +28,14 @@ export struct ImportPage {
       this.unsubscribe()
       this.unsubscribe = undefined
     }
+    this.store.reset()
+  }
+
+  private onBackClick(): void {
+    this.store.reset()
+    if (this.onBack) {
+      this.onBack()
+    }
   }
 
   private async onPickFile(): Promise<void> {
@@ -37,8 +45,11 @@ export struct ImportPage {
 
   private async onImport(): Promise<void> {
     await this.store.startImport()
-    if (this.store.phase === 'success' && this.onImportSuccess) {
-      this.onImportSuccess()
+    if (this.store.phase === 'success') {
+      this.store.reset()
+      if (this.onImportSuccess) {
+        this.onImportSuccess()
+      }
     }
   }
 
@@ -48,7 +59,7 @@ export struct ImportPage {
       PageHeader({ title: '导入应用' })
       if (this.onBack) {
         Button('返回列表').onClick(() => {
-          this.onBack && this.onBack()
+          this.onBackClick()
         }).margin({ bottom: 8, left: 16, right: 16 })
       }
       if (this.store.error) {
