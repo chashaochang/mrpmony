@@ -65,6 +65,7 @@ export struct AppListPage {
     Column() {
       Text(`${this.refreshTick}-${this.refreshToken}`).fontSize(1).opacity(0)
       PageHeader({ title: '应用列表' })
+      StatusBanner({ text: '运行入口：点击“可运行”应用卡片进入运行页；导入入口：点击下方“导入应用”。' })
       if (this.selectedAppId) {
         StatusBanner({ text: `已选择应用：${this.selectedAppId}` })
       }
@@ -81,6 +82,7 @@ export struct AppListPage {
           items: this.store.items,
           onItemTap: (appId: string) => this.openRunPage(appId)
         })
+        ImportEntryButton({ onTap: () => this.openImportPage() })
       }
     }
     .width('100%')

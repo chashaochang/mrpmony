@@ -64,6 +64,8 @@ export struct RunPage {
         StatusBanner({ text: this.store.error.message })
       }
       RuntimeToolbar({
+        canRestart: this.store.canRestart,
+        canExit: this.store.canExit,
         onBack: () => this.onBackClick(),
         onRestart: () => this.onRestart(),
         onExit: () => this.onExit()

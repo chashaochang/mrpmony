@@ -3,6 +3,8 @@ export struct RuntimeToolbar {
   onBack?: () => void
   onRestart?: () => void
   onExit?: () => void
+  @Prop canRestart: boolean = true
+  @Prop canExit: boolean = true
 
   build() {
     Row({ space: 12 }) {
@@ -11,16 +13,20 @@ export struct RuntimeToolbar {
           this.onBack()
         }
       })
-      Button('重启').onClick(() => {
-        if (this.onRestart) {
-          this.onRestart()
-        }
-      })
-      Button('退出').onClick(() => {
-        if (this.onExit) {
-          this.onExit()
-        }
-      })
+      Button('重启')
+        .enabled(this.canRestart)
+        .onClick(() => {
+          if (this.onRestart) {
+            this.onRestart()
+          }
+        })
+      Button('退出')
+        .enabled(this.canExit)
+        .onClick(() => {
+          if (this.onExit) {
+            this.onExit()
+          }
+        })
     }
     .padding(16)
   }
