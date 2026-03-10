@@ -28,6 +28,7 @@ check_file "AppScope/app.json5" || FAILED=1
 check_file "build-profile.json5" || FAILED=1
 check_file "hvigorfile.ts" || FAILED=1
 check_file "oh-package.json5" || FAILED=1
+check_file "entry/hvigorfile.ts" || FAILED=1
 check_file "entry/oh-package.json5" || FAILED=1
 check_file "entry/build-profile.json5" || FAILED=1
 check_file "entry/src/main/module.json5" || FAILED=1
