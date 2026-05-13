@@ -1,7 +1,7 @@
-@Component
+@ComponentV2
 export struct ConfirmDialog {
-  @Prop title: string = '确认'
-  @Prop content: string = ''
+  @Param title: string = '确认'
+  @Param content: string = ''
 
   build() {
     Column() {

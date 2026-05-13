@@ -1,6 +1,6 @@
-@Component
+@ComponentV2
 export struct AppCard {
-  @Prop title: string = ''
+  @Param title: string = ''
 
   build() {
     Column() {

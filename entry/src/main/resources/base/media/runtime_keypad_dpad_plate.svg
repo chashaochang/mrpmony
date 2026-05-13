@@ -1,0 +1,21 @@
+<svg width="190" height="148" viewBox="0 0 190 148" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="body" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(95 52) rotate(90) scale(96 108)">
+      <stop offset="0" stop-color="#E8F3F8"/>
+      <stop offset="0.52" stop-color="#7D929F"/>
+      <stop offset="1" stop-color="#1B2A34"/>
+    </radialGradient>
+    <linearGradient id="rim" x1="95" y1="6" x2="95" y2="142" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.52" stop-color="#9EB5C4"/>
+      <stop offset="1" stop-color="#08131C"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="95" cy="78" rx="84" ry="62" fill="#071019" opacity="0.35"/>
+  <ellipse cx="95" cy="70" rx="82" ry="62" fill="url(#rim)"/>
+  <ellipse cx="95" cy="70" rx="72" ry="52" fill="url(#body)"/>
+  <ellipse cx="95" cy="70" rx="56" ry="40" fill="#223440" opacity="0.54"/>
+  <path d="M47 31C69 17 121 17 143 31" stroke="#FFFFFF" stroke-opacity="0.62" stroke-width="3" stroke-linecap="round"/>
+  <path d="M45 111C68 126 122 126 145 111" stroke="#00080E" stroke-opacity="0.65" stroke-width="4" stroke-linecap="round"/>
+  <path d="M28 76C42 106 68 123 95 123C122 123 148 106 162 76" stroke="#8DE6FF" stroke-opacity="0.26" stroke-width="3" stroke-linecap="round"/>
+</svg>

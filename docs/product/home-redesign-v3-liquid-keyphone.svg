@@ -1,0 +1,203 @@
+<svg width="1280" height="2832" viewBox="0 0 1280 2832" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="pageBg" x1="0" y1="0" x2="1280" y2="2832" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FCFF"/>
+      <stop offset="0.45" stop-color="#EEF7FB"/>
+      <stop offset="1" stop-color="#F7FBFE"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FFFFFF" stop-opacity="0.82"/>
+      <stop offset="0.45" stop-color="#F7FCFF" stop-opacity="0.40"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.68"/>
+    </linearGradient>
+    <linearGradient id="rowGlass" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FFFFFF" stop-opacity="0.58"/>
+      <stop offset="0.55" stop-color="#F7FCFF" stop-opacity="0.20"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.50"/>
+    </linearGradient>
+    <linearGradient id="dockGlass" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FFFFFF" stop-opacity="0.78"/>
+      <stop offset="0.48" stop-color="#F4FAFE" stop-opacity="0.44"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.74"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-40%" width="140%" height="180%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="28" flood-color="#6A8AA0" flood-opacity="0.18"/>
+      <feDropShadow dx="0" dy="-6" stdDeviation="18" flood-color="#FFFFFF" flood-opacity="0.88"/>
+    </filter>
+    <filter id="innerGlow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#FFFFFF" flood-opacity="0.9"/>
+      <feDropShadow dx="0" dy="16" stdDeviation="22" flood-color="#B9CBD6" flood-opacity="0.18"/>
+    </filter>
+    <style>
+      .title { font: 700 58px -apple-system, BlinkMacSystemFont, "HarmonyOS Sans SC", "PingFang SC", sans-serif; fill: #122530; letter-spacing: 0; }
+      .meta { font: 400 32px -apple-system, BlinkMacSystemFont, "HarmonyOS Sans SC", "PingFang SC", sans-serif; fill: #70828C; letter-spacing: 0; }
+      .body { font: 500 38px -apple-system, BlinkMacSystemFont, "HarmonyOS Sans SC", "PingFang SC", sans-serif; fill: #142A34; letter-spacing: 0; }
+      .sub { font: 400 30px -apple-system, BlinkMacSystemFont, "HarmonyOS Sans SC", "PingFang SC", sans-serif; fill: #71838C; letter-spacing: 0; }
+      .small { font: 500 28px -apple-system, BlinkMacSystemFont, "HarmonyOS Sans SC", "PingFang SC", sans-serif; fill: #536873; letter-spacing: 0; }
+      .tag { font: 600 26px -apple-system, BlinkMacSystemFont, "HarmonyOS Sans SC", "PingFang SC", sans-serif; fill: #1E697C; letter-spacing: 0; }
+      .dock { font: 500 26px -apple-system, BlinkMacSystemFont, "HarmonyOS Sans SC", "PingFang SC", sans-serif; fill: #51646E; letter-spacing: 0; }
+      .activeDock { font: 600 26px -apple-system, BlinkMacSystemFont, "HarmonyOS Sans SC", "PingFang SC", sans-serif; fill: #126DCE; letter-spacing: 0; }
+      .mono { font: 700 26px "SF Mono", "HarmonyOS Sans SC", monospace; fill: #1D6E80; letter-spacing: 0; }
+    </style>
+  </defs>
+
+  <rect width="1280" height="2832" fill="url(#pageBg)"/>
+
+  <rect x="0" y="0" width="1280" height="142" fill="#FFFFFF"/>
+  <text x="56" y="98" font-family="-apple-system, BlinkMacSystemFont, HarmonyOS Sans SC, PingFang SC, sans-serif" font-size="44" font-weight="700" fill="#141D23">09:41</text>
+  <text x="856" y="98" font-family="-apple-system, BlinkMacSystemFont, HarmonyOS Sans SC, PingFang SC, sans-serif" font-size="42" font-weight="700" fill="#141D23">5A</text>
+  <text x="1010" y="98" font-family="-apple-system, BlinkMacSystemFont, HarmonyOS Sans SC, PingFang SC, sans-serif" font-size="42" font-weight="700" fill="#141D23">5A</text>
+  <rect x="1132" y="58" width="82" height="46" rx="14" fill="#141D23"/>
+  <text x="1146" y="94" font-family="-apple-system, BlinkMacSystemFont, HarmonyOS Sans SC, PingFang SC, sans-serif" font-size="34" font-weight="700" fill="#FFFFFF">100</text>
+
+  <g filter="url(#softShadow)">
+    <rect x="40" y="166" width="1200" height="176" rx="44" fill="url(#glass)" stroke="#FFFFFF" stroke-opacity="0.72" stroke-width="2"/>
+    <text x="72" y="242" class="title">MRP 本地库</text>
+    <text x="72" y="296" class="meta">665 项 · 游戏 616 · 应用 49</text>
+    <rect x="940" y="206" width="246" height="96" rx="48" fill="#FFFFFF" fill-opacity="0.44" stroke="#FFFFFF" stroke-opacity="0.88" stroke-width="2"/>
+    <text x="1010" y="268" class="tag">继续</text>
+  </g>
+
+  <g filter="url(#innerGlow)">
+    <rect x="40" y="374" width="1200" height="116" rx="46" fill="url(#glass)" stroke="#FFFFFF" stroke-opacity="0.86" stroke-width="2"/>
+    <circle cx="104" cy="432" r="24" stroke="#7E929B" stroke-opacity="0.65" stroke-width="6"/>
+    <line x1="122" y1="450" x2="142" y2="470" stroke="#7E929B" stroke-opacity="0.65" stroke-width="6" stroke-linecap="round"/>
+    <text x="168" y="447" font-family="-apple-system, BlinkMacSystemFont, HarmonyOS Sans SC, PingFang SC, sans-serif" font-size="42" font-weight="400" fill="#8A9AA2">搜索名称或文件名</text>
+  </g>
+
+  <g filter="url(#innerGlow)">
+    <rect x="40" y="520" width="1200" height="98" rx="40" fill="#FFFFFF" fill-opacity="0.30" stroke="#FFFFFF" stroke-opacity="0.64" stroke-width="2"/>
+    <rect x="56" y="534" width="374" height="70" rx="35" fill="#FFFFFF" fill-opacity="0.76"/>
+    <text x="184" y="581" class="small" fill="#142A34">全部 665</text>
+    <text x="566" y="581" class="small">游戏 616</text>
+    <text x="946" y="581" class="small">应用 49</text>
+  </g>
+
+  <g opacity="0.22">
+    <rect x="-80" y="680" width="1500" height="1" fill="#FFFFFF"/>
+    <rect x="-80" y="2634" width="1500" height="1" fill="#FFFFFF"/>
+  </g>
+
+  <g transform="translate(40 660)">
+    <g filter="url(#innerGlow)">
+      <rect x="0" y="0" width="1200" height="128" rx="24" fill="url(#rowGlass)" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="1.5"/>
+      <rect x="40" y="24" width="80" height="80" rx="22" fill="#ECF7FA" fill-opacity="0.72" stroke="#FFFFFF" stroke-opacity="0.72"/>
+      <text x="60" y="63" class="mono">MR</text>
+      <circle cx="64" cy="86" r="7" fill="#77929C"/>
+      <circle cx="88" cy="86" r="7" fill="#77929C"/>
+      <circle cx="112" cy="86" r="7" fill="#77929C"/>
+      <text x="160" y="54" class="body">雷电1944</text>
+      <text x="160" y="96" class="sub">1000_240320_gld.mrp</text>
+      <text x="1116" y="54" class="tag">游戏</text>
+      <text x="1092" y="94" class="sub" font-size="26">最近</text>
+    </g>
+
+    <g transform="translate(0 148)" filter="url(#innerGlow)">
+      <rect x="0" y="0" width="1200" height="128" rx="24" fill="url(#rowGlass)" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="1.5"/>
+      <rect x="40" y="24" width="80" height="80" rx="22" fill="#ECF7FA" fill-opacity="0.72" stroke="#FFFFFF" stroke-opacity="0.72"/>
+      <text x="60" y="63" class="mono">MR</text>
+      <circle cx="64" cy="86" r="7" fill="#77929C"/>
+      <circle cx="88" cy="86" r="7" fill="#77929C"/>
+      <circle cx="112" cy="86" r="7" fill="#77929C"/>
+      <text x="160" y="54" class="body">007</text>
+      <text x="160" y="96" class="sub">322010_240320_gllq.mrp</text>
+      <text x="1116" y="72" class="tag">游戏</text>
+    </g>
+
+    <g transform="translate(0 296)" filter="url(#innerGlow)">
+      <rect x="0" y="0" width="1200" height="128" rx="24" fill="url(#rowGlass)" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="1.5"/>
+      <rect x="40" y="24" width="80" height="80" rx="22" fill="#ECF7FA" fill-opacity="0.72" stroke="#FFFFFF" stroke-opacity="0.72"/>
+      <text x="60" y="63" class="mono">MR</text>
+      <circle cx="64" cy="86" r="7" fill="#77929C"/>
+      <circle cx="88" cy="86" r="7" fill="#77929C"/>
+      <circle cx="112" cy="86" r="7" fill="#77929C"/>
+      <text x="160" y="54" class="body">2012世纪空战</text>
+      <text x="160" y="96" class="sub">308025_240320_gsjkz.mrp</text>
+      <text x="1116" y="72" class="tag">游戏</text>
+    </g>
+
+    <g transform="translate(0 444)" filter="url(#innerGlow)">
+      <rect x="0" y="0" width="1200" height="128" rx="24" fill="url(#rowGlass)" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="1.5"/>
+      <rect x="40" y="24" width="80" height="80" rx="22" fill="#EDF8F4" fill-opacity="0.72" stroke="#FFFFFF" stroke-opacity="0.72"/>
+      <text x="48" y="63" class="mono" fill="#276B55">APP</text>
+      <circle cx="64" cy="86" r="7" fill="#77929C"/>
+      <circle cx="88" cy="86" r="7" fill="#77929C"/>
+      <circle cx="112" cy="86" r="7" fill="#77929C"/>
+      <text x="160" y="54" class="body">12530音乐客户端</text>
+      <text x="160" y="96" class="sub">12530.mrp</text>
+      <text x="1116" y="72" class="tag" fill="#2C715C">应用</text>
+    </g>
+
+    <g transform="translate(0 592)" filter="url(#innerGlow)">
+      <rect x="0" y="0" width="1200" height="128" rx="24" fill="url(#rowGlass)" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="1.5"/>
+      <rect x="40" y="24" width="80" height="80" rx="22" fill="#ECF7FA" fill-opacity="0.72" stroke="#FFFFFF" stroke-opacity="0.72"/>
+      <text x="60" y="63" class="mono">MR</text>
+      <circle cx="64" cy="86" r="7" fill="#77929C"/>
+      <circle cx="88" cy="86" r="7" fill="#77929C"/>
+      <circle cx="112" cy="86" r="7" fill="#77929C"/>
+      <text x="160" y="54" class="body">2048</text>
+      <text x="160" y="96" class="sub">2048.mrp</text>
+      <text x="1116" y="72" class="tag">游戏</text>
+    </g>
+
+    <g transform="translate(0 740)" filter="url(#innerGlow)">
+      <rect x="0" y="0" width="1200" height="128" rx="24" fill="url(#rowGlass)" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="1.5"/>
+      <rect x="40" y="24" width="80" height="80" rx="22" fill="#ECF7FA" fill-opacity="0.72" stroke="#FFFFFF" stroke-opacity="0.72"/>
+      <text x="60" y="63" class="mono">MR</text>
+      <circle cx="64" cy="86" r="7" fill="#77929C"/>
+      <circle cx="88" cy="86" r="7" fill="#77929C"/>
+      <circle cx="112" cy="86" r="7" fill="#77929C"/>
+      <text x="160" y="54" class="body">21点胜者为王</text>
+      <text x="160" y="96" class="sub">313007_240320_gesd.mrp</text>
+      <text x="1116" y="72" class="tag">游戏</text>
+    </g>
+
+    <g transform="translate(0 888)" filter="url(#innerGlow)">
+      <rect x="0" y="0" width="1200" height="128" rx="24" fill="url(#rowGlass)" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="1.5"/>
+      <rect x="40" y="24" width="80" height="80" rx="22" fill="#EDF8F4" fill-opacity="0.72" stroke="#FFFFFF" stroke-opacity="0.72"/>
+      <text x="48" y="63" class="mono" fill="#276B55">APP</text>
+      <circle cx="64" cy="86" r="7" fill="#77929C"/>
+      <circle cx="88" cy="86" r="7" fill="#77929C"/>
+      <circle cx="112" cy="86" r="7" fill="#77929C"/>
+      <text x="160" y="54" class="body">MRP编程手册</text>
+      <text x="160" y="96" class="sub">opmrbc.mrp</text>
+      <text x="1116" y="72" class="tag" fill="#2C715C">应用</text>
+    </g>
+
+    <g transform="translate(0 1036)" filter="url(#innerGlow)">
+      <rect x="0" y="0" width="1200" height="128" rx="24" fill="url(#rowGlass)" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="1.5"/>
+      <rect x="40" y="24" width="80" height="80" rx="22" fill="#ECF7FA" fill-opacity="0.72" stroke="#FFFFFF" stroke-opacity="0.72"/>
+      <text x="60" y="63" class="mono">MR</text>
+      <circle cx="64" cy="86" r="7" fill="#77929C"/>
+      <circle cx="88" cy="86" r="7" fill="#77929C"/>
+      <circle cx="112" cy="86" r="7" fill="#77929C"/>
+      <text x="160" y="54" class="body">3D实况赛车</text>
+      <text x="160" y="96" class="sub">opsksc.mrp</text>
+      <text x="1116" y="72" class="tag">游戏</text>
+    </g>
+  </g>
+
+  <g opacity="0.7">
+    <rect x="0" y="2270" width="1280" height="310" fill="url(#pageBg)" fill-opacity="0.16"/>
+  </g>
+
+  <g filter="url(#softShadow)">
+    <rect x="58" y="2388" width="700" height="138" rx="69" fill="url(#dockGlass)" stroke="#FFFFFF" stroke-opacity="0.9" stroke-width="2"/>
+    <rect x="1064" y="2378" width="150" height="150" rx="75" fill="url(#dockGlass)" stroke="#FFFFFF" stroke-opacity="0.9" stroke-width="2"/>
+    <rect x="178" y="2414" width="42" height="62" rx="12" stroke="#126DCE" stroke-width="8"/>
+    <text x="162" y="2505" class="activeDock">应用</text>
+    <circle cx="408" cy="2448" r="33" stroke="#9CAAB2" stroke-opacity="0.64" stroke-width="7"/>
+    <line x1="408" y1="2448" x2="408" y2="2428" stroke="#9CAAB2" stroke-opacity="0.64" stroke-width="7" stroke-linecap="round"/>
+    <line x1="408" y1="2448" x2="428" y2="2464" stroke="#9CAAB2" stroke-opacity="0.64" stroke-width="7" stroke-linecap="round"/>
+    <text x="378" y="2505" class="dock">最近</text>
+    <circle cx="586" cy="2434" r="7" fill="#9CAAB2" fill-opacity="0.72"/>
+    <circle cx="630" cy="2434" r="7" fill="#9CAAB2" fill-opacity="0.72"/>
+    <circle cx="586" cy="2478" r="7" fill="#9CAAB2" fill-opacity="0.72"/>
+    <circle cx="630" cy="2478" r="7" fill="#9CAAB2" fill-opacity="0.72"/>
+    <text x="578" y="2505" class="dock">设置</text>
+    <line x1="1139" y1="2424" x2="1139" y2="2484" stroke="#111B22" stroke-width="8" stroke-linecap="round"/>
+    <line x1="1109" y1="2454" x2="1169" y2="2454" stroke="#111B22" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <rect x="440" y="2770" width="400" height="12" rx="6" fill="#121B22" fill-opacity="0.12"/>
+</svg>

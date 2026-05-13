@@ -1,0 +1,167 @@
+<svg width="1280" height="2832" viewBox="0 0 1280 2832" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="640" y1="120" x2="640" y2="2832" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FCFF"/>
+      <stop offset="0.52" stop-color="#EEF5FA"/>
+      <stop offset="1" stop-color="#E8F0F7"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="88" y1="0" x2="1192" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity="0.82"/>
+      <stop offset="0.45" stop-color="#F7FCFF" stop-opacity="0.46"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.72"/>
+    </linearGradient>
+    <linearGradient id="tabGlass" x1="58" y1="0" x2="760" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity="0.86"/>
+      <stop offset="0.5" stop-color="#F5FBFF" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.78"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="150%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#173247" flood-opacity="0.08"/>
+    </filter>
+    <filter id="glassShadow" x="-20%" y="-20%" width="140%" height="150%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#143247" flood-opacity="0.14"/>
+    </filter>
+    <style>
+      .title { font-family: HarmonyOS Sans SC, PingFang SC, Arial, sans-serif; font-weight: 700; fill: #132933; }
+      .body { font-family: HarmonyOS Sans SC, PingFang SC, Arial, sans-serif; fill: #5E6F79; }
+      .label { font-family: HarmonyOS Sans SC, PingFang SC, Arial, sans-serif; fill: #18313B; }
+      .muted { font-family: HarmonyOS Sans SC, PingFang SC, Arial, sans-serif; fill: #7A8992; }
+      .accent { font-family: HarmonyOS Sans SC, PingFang SC, Arial, sans-serif; fill: #0B6F83; }
+    </style>
+  </defs>
+
+  <rect width="1280" height="2832" fill="url(#bg)"/>
+
+  <!-- status bar -->
+  <text x="56" y="96" class="title" font-size="52">09:41</text>
+  <text x="846" y="92" class="title" font-size="34">Wi‑Fi</text>
+  <rect x="1030" y="58" width="146" height="52" rx="16" fill="#22262A"/>
+  <text x="1054" y="96" font-family="Arial" font-weight="700" font-size="34" fill="#FFFFFF">100%</text>
+
+  <!-- compact app bar -->
+  <g transform="translate(56 166)">
+    <text x="0" y="78" class="title" font-size="64">本地库</text>
+    <text x="0" y="130" class="body" font-size="34">665 项 · 游戏 616 · 应用 49</text>
+    <g transform="translate(770 18)">
+      <text x="0" y="40" class="label" font-size="34" font-weight="600">全部可运行</text>
+      <text x="18" y="86" class="muted" font-size="32">665 可运行</text>
+    </g>
+    <g transform="translate(1030 28)" filter="url(#softShadow)">
+      <rect x="0" y="0" width="112" height="72" rx="36" fill="#FFFFFF" fill-opacity="0.62"/>
+      <text x="28" y="47" class="accent" font-size="30" font-weight="600">继续</text>
+    </g>
+  </g>
+
+  <!-- search -->
+  <g transform="translate(56 354)" filter="url(#softShadow)">
+    <rect x="0" y="0" width="1168" height="112" rx="36" fill="url(#glass)" stroke="#FFFFFF" stroke-opacity="0.62"/>
+    <text x="66" y="71" class="muted" font-size="42">搜索 MRP</text>
+  </g>
+
+  <!-- segmented filters -->
+  <g transform="translate(56 506)">
+    <rect x="0" y="0" width="1168" height="88" rx="34" fill="#FFFFFF" fill-opacity="0.36" stroke="#FFFFFF" stroke-opacity="0.52"/>
+    <g filter="url(#softShadow)">
+      <rect x="12" y="10" width="390" height="68" rx="30" fill="#FFFFFF" fill-opacity="0.86"/>
+    </g>
+    <text x="133" y="56" class="label" font-size="32" font-weight="600">全部 665</text>
+    <text x="545" y="56" class="body" font-size="32">游戏 616</text>
+    <text x="986" y="56" class="body" font-size="32">应用 49</text>
+  </g>
+
+  <!-- list header -->
+  <g transform="translate(64 660)">
+    <text x="0" y="0" class="body" font-size="30">显示 665 / 665</text>
+    <text x="952" y="0" class="accent" font-size="30" font-weight="600">最近优先</text>
+  </g>
+
+  <g transform="translate(64 748)">
+    <text x="0" y="0" class="title" font-size="42">游戏</text>
+    <rect x="130" y="-35" width="78" height="46" rx="23" fill="#FFFFFF" fill-opacity="0.48"/>
+    <text x="154" y="0" class="body" font-size="30">616</text>
+  </g>
+
+  <!-- reusable row look, dense and list-first -->
+  <g transform="translate(56 800)">
+    <g>
+      <rect x="0" y="0" width="1168" height="104" rx="18" fill="#FFFFFF" fill-opacity="0.34" stroke="#FFFFFF" stroke-opacity="0.42"/>
+      <rect x="52" y="22" width="60" height="60" rx="18" fill="#EAF5F8" stroke="#FFFFFF" stroke-opacity="0.72"/>
+      <text x="66" y="58" class="accent" font-size="24" font-weight="700">MR</text>
+      <circle cx="75" cy="73" r="5" fill="#6E858F"/><circle cx="92" cy="73" r="5" fill="#6E858F"/><circle cx="109" cy="73" r="5" fill="#6E858F"/>
+      <text x="154" y="43" class="title" font-size="38">雷电1944</text>
+      <text x="154" y="83" class="muted" font-size="28">1000_240320_gld.mrp</text>
+      <text x="1070" y="44" class="accent" font-size="27">游戏</text>
+      <text x="1064" y="82" class="muted" font-size="25">最近</text>
+    </g>
+    <g transform="translate(0 112)">
+      <rect x="0" y="0" width="1168" height="104" rx="18" fill="#FFFFFF" fill-opacity="0.30" stroke="#FFFFFF" stroke-opacity="0.36"/>
+      <rect x="52" y="22" width="60" height="60" rx="18" fill="#EAF5F8" stroke="#FFFFFF" stroke-opacity="0.72"/>
+      <text x="66" y="58" class="accent" font-size="24" font-weight="700">MR</text>
+      <circle cx="75" cy="73" r="5" fill="#6E858F"/><circle cx="92" cy="73" r="5" fill="#6E858F"/><circle cx="109" cy="73" r="5" fill="#6E858F"/>
+      <text x="154" y="43" class="title" font-size="38">007</text>
+      <text x="154" y="83" class="muted" font-size="28">322010_240320_gllq.mrp</text>
+      <text x="1070" y="44" class="accent" font-size="27">游戏</text>
+    </g>
+    <g transform="translate(0 224)">
+      <rect x="0" y="0" width="1168" height="104" rx="18" fill="#FFFFFF" fill-opacity="0.30" stroke="#FFFFFF" stroke-opacity="0.36"/>
+      <rect x="52" y="22" width="60" height="60" rx="18" fill="#EAF5F8" stroke="#FFFFFF" stroke-opacity="0.72"/>
+      <text x="66" y="58" class="accent" font-size="24" font-weight="700">MR</text>
+      <circle cx="75" cy="73" r="5" fill="#6E858F"/><circle cx="92" cy="73" r="5" fill="#6E858F"/><circle cx="109" cy="73" r="5" fill="#6E858F"/>
+      <text x="154" y="43" class="title" font-size="38">2012世纪空战</text>
+      <text x="154" y="83" class="muted" font-size="28">308025_240320_gsjkz.mrp</text>
+      <text x="1070" y="44" class="accent" font-size="27">游戏</text>
+    </g>
+    <g transform="translate(0 336)">
+      <rect x="0" y="0" width="1168" height="104" rx="18" fill="#FFFFFF" fill-opacity="0.30" stroke="#FFFFFF" stroke-opacity="0.36"/>
+      <rect x="52" y="22" width="60" height="60" rx="18" fill="#EAF5F8" stroke="#FFFFFF" stroke-opacity="0.72"/>
+      <text x="66" y="58" class="accent" font-size="24" font-weight="700">MR</text>
+      <circle cx="75" cy="73" r="5" fill="#6E858F"/><circle cx="92" cy="73" r="5" fill="#6E858F"/><circle cx="109" cy="73" r="5" fill="#6E858F"/>
+      <text x="154" y="43" class="title" font-size="38">2012末日之战</text>
+      <text x="154" y="83" class="muted" font-size="28">316024_240320_ghdljdb.mrp</text>
+      <text x="1070" y="44" class="accent" font-size="27">游戏</text>
+    </g>
+    <g transform="translate(0 448)">
+      <rect x="0" y="0" width="1168" height="104" rx="18" fill="#FFFFFF" fill-opacity="0.30" stroke="#FFFFFF" stroke-opacity="0.36"/>
+      <rect x="52" y="22" width="60" height="60" rx="18" fill="#EAF5F8" stroke="#FFFFFF" stroke-opacity="0.72"/>
+      <text x="66" y="58" class="accent" font-size="24" font-weight="700">MR</text>
+      <circle cx="75" cy="73" r="5" fill="#6E858F"/><circle cx="92" cy="73" r="5" fill="#6E858F"/><circle cx="109" cy="73" r="5" fill="#6E858F"/>
+      <text x="154" y="43" class="title" font-size="38">2048</text>
+      <text x="154" y="83" class="muted" font-size="28">2048.mrp</text>
+      <text x="1070" y="44" class="accent" font-size="27">游戏</text>
+    </g>
+    <g transform="translate(0 560)">
+      <rect x="0" y="0" width="1168" height="104" rx="18" fill="#FFFFFF" fill-opacity="0.30" stroke="#FFFFFF" stroke-opacity="0.36"/>
+      <rect x="52" y="22" width="60" height="60" rx="18" fill="#EAF5F8" stroke="#FFFFFF" stroke-opacity="0.72"/>
+      <text x="66" y="58" class="accent" font-size="24" font-weight="700">MR</text>
+      <circle cx="75" cy="73" r="5" fill="#6E858F"/><circle cx="92" cy="73" r="5" fill="#6E858F"/><circle cx="109" cy="73" r="5" fill="#6E858F"/>
+      <text x="154" y="43" class="title" font-size="38">21点胜者为王</text>
+      <text x="154" y="83" class="muted" font-size="28">313007_240320_gesd.mrp</text>
+      <text x="1070" y="44" class="accent" font-size="27">游戏</text>
+    </g>
+  </g>
+
+  <!-- HDS floating bottom tabs, content continues behind -->
+  <g transform="translate(56 2480)" filter="url(#glassShadow)">
+    <rect x="0" y="0" width="700" height="152" rx="76" fill="url(#tabGlass)" stroke="#FFFFFF" stroke-opacity="0.8"/>
+    <g transform="translate(130 32)">
+      <rect x="0" y="0" width="42" height="58" rx="10" stroke="#0A73E8" stroke-width="7"/>
+      <text x="-10" y="100" fill="#0A73E8" font-family="HarmonyOS Sans SC, PingFang SC, Arial" font-size="28" font-weight="700">应用</text>
+    </g>
+    <g transform="translate(335 32)">
+      <circle cx="24" cy="29" r="28" stroke="#8B969D" stroke-width="6" opacity="0.65"/>
+      <path d="M24 13V31L38 40" stroke="#8B969D" stroke-width="6" stroke-linecap="round" opacity="0.65"/>
+      <text x="-5" y="100" fill="#6D767D" font-family="HarmonyOS Sans SC, PingFang SC, Arial" font-size="28" font-weight="600">最近</text>
+    </g>
+    <g transform="translate(538 34)">
+      <circle cx="0" cy="0" r="7" fill="#8B969D" opacity="0.6"/><circle cx="42" cy="0" r="7" fill="#8B969D" opacity="0.6"/>
+      <circle cx="0" cy="42" r="7" fill="#8B969D" opacity="0.6"/><circle cx="42" cy="42" r="7" fill="#8B969D" opacity="0.6"/>
+      <text x="-22" y="98" fill="#6D767D" font-family="HarmonyOS Sans SC, PingFang SC, Arial" font-size="28" font-weight="600">设置</text>
+    </g>
+  </g>
+  <g transform="translate(1028 2480)" filter="url(#glassShadow)">
+    <circle cx="76" cy="76" r="76" fill="#FFFFFF" fill-opacity="0.78" stroke="#FFFFFF" stroke-opacity="0.85"/>
+    <path d="M76 34V118M34 76H118" stroke="#080B0D" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <rect x="444" y="2766" width="392" height="18" rx="9" fill="#C8CDD3" fill-opacity="0.55"/>
+</svg>

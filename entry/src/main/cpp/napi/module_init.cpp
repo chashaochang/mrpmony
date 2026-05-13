@@ -1,10 +1,14 @@
 #include <node_api.h>
 
+#include "../runtime/XComponentSurfaceRenderer.h"
+
 napi_value ExportMrpFacade(napi_env env, napi_value exports);
 
 static napi_value InitModule(napi_env env, napi_value exports)
 {
-    return ExportMrpFacade(env, exports);
+    napi_value result = ExportMrpFacade(env, exports);
+    MrpRegisterXComponent(env, result);
+    return result;
 }
 
 static napi_module g_mrpModule = {

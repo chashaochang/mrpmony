@@ -16,6 +16,8 @@ node_modules/
 # HarmonyOS / DevEco common outputs
 .local/
 .cache/
+.hvigor/
+entry/.cxx/
 local.properties
 AppScope/*.p12
 AppScope/*.mobileprovision
@@ -25,4 +27,6 @@ AppScope/*.mobileprovision
 
 # Temp
 .tmp/
+.tmp_screens/
+.tmp_key_preview*.png
 tmp/

@@ -1,6 +1,6 @@
-@Component
+@ComponentV2
 export struct RuntimeStatusOverlay {
-  @Prop text: string = ''
+  @Param text: string = ''
 
   build() {
     if (this.text) {

@@ -1,0 +1,88 @@
+{
+  "color": [
+    {
+      "name": "start_window_background",
+      "value": "#081014"
+    },
+    {
+      "name": "home_background_start",
+      "value": "#10191E"
+    },
+    {
+      "name": "home_background_mid",
+      "value": "#0A1418"
+    },
+    {
+      "name": "home_background_end",
+      "value": "#111A20"
+    },
+    {
+      "name": "app_surface",
+      "value": "#E61B252B"
+    },
+    {
+      "name": "app_surface_muted",
+      "value": "#CC202D34"
+    },
+    {
+      "name": "app_surface_border",
+      "value": "#44515F66"
+    },
+    {
+      "name": "app_primary_soft",
+      "value": "#17343B"
+    },
+    {
+      "name": "app_primary_text",
+      "value": "#D9F6F8"
+    },
+    {
+      "name": "app_success_soft",
+      "value": "#193329"
+    },
+    {
+      "name": "app_danger_soft",
+      "value": "#3A211F"
+    },
+    {
+      "name": "app_accent_text",
+      "value": "#8DDDEA"
+    },
+    {
+      "name": "app_success_text",
+      "value": "#8BE3A9"
+    },
+    {
+      "name": "app_danger_text",
+      "value": "#FFA39A"
+    },
+    {
+      "name": "app_game_text",
+      "value": "#85D9EA"
+    },
+    {
+      "name": "app_app_text",
+      "value": "#8CDEB1"
+    },
+    {
+      "name": "app_game_tile_start",
+      "value": "#17313A"
+    },
+    {
+      "name": "app_game_tile_end",
+      "value": "#10252D"
+    },
+    {
+      "name": "app_app_tile_start",
+      "value": "#183329"
+    },
+    {
+      "name": "app_app_tile_end",
+      "value": "#10271E"
+    },
+    {
+      "name": "app_icon_dot",
+      "value": "#7EA0AA"
+    }
+  ]
+}

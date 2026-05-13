@@ -5,7 +5,7 @@
 
 class MrpRuntime {
 public:
-    CommonResult Init(int32_t width, int32_t height, bool debug);
+    CommonResult Init(const std::string &workDir, int32_t width, int32_t height, bool debug);
     CommonResult LoadPackage(const std::string &packagePath);
     CommonResult Start();
     CommonResult Pause();
@@ -16,6 +16,8 @@ public:
     int32_t Height() const;
     int64_t NextFrameId();
     int64_t CurrentFrameId() const;
+    bool IsRunning() const;
+    int32_t PumpTimer(int32_t iterations);
 
 private:
     enum class State {
@@ -32,6 +34,9 @@ private:
     int32_t height_ = 320;
     bool debug_ = false;
     int64_t frameId_ = 0;
+    std::string workDir_;
+    std::string packageName_ = "dsm_gm.mrp";
+    std::string extName_ = "start.mr";
 };
 
 #endif

@@ -36,7 +36,7 @@ export class RuntimeSessionStore extends StoreObserver {
       this.phase = 'running'
       this.canRestart = true
       this.canExit = true
-      this.runtimeHint = 'Native/NAPI 已连通，准备拉取测试帧'
+      this.runtimeHint = 'Native/NAPI 已连通，准备拉取首帧'
       await this.refreshFrame()
     } catch (error) {
       this.phase = 'error'
@@ -91,7 +91,7 @@ export class RuntimeSessionStore extends StoreObserver {
       const frame = await this.service.pullFrame()
       this.frame = frame
       this.runtimeHint = frame.hasFrame
-        ? `已拉到测试帧 #${frame.frameId}（${frame.width}x${frame.height} ${frame.pixelFormat}）`
+        ? `已拉到 MRP 画面 #${frame.frameId}（${frame.width}x${frame.height} ${frame.pixelFormat}${frame.pixelMap ? '' : '，PixelMap 等待中'}）`
         : '当前未返回新帧'
     } catch (error) {
       this.runtimeHint = error instanceof Error ? error.message : 'pullFrame 失败'
