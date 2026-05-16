@@ -30,6 +30,10 @@ export struct AppListView {
   @Local activeSortMode: ListSortMode = 'name'
   @Local sortRefreshTick: number = 0
   @Local sortMenuVisible: boolean = false
+  @Local visibleCache: AppItemVM[] = []
+  @Local allCount: number = 0
+  @Local gameCount: number = 0
+  @Local appCount: number = 0
   private appPreferences: AppPreferences = new AppPreferences()
   private recentCacheText: string = ''
   private recentCacheIds: string[] = []
@@ -37,9 +41,11 @@ export struct AppListView {
 
   aboutToAppear(): void {
     if (this.sortMode === 'input') {
+      this.rebuildVisibleState()
       return
     }
     this.activeSortMode = this.sortMode === 'name' ? this.appPreferences.listSortMode() : this.sortMode
+    this.rebuildVisibleState()
   }
 
   @Monitor('recentAppIdsText')
@@ -48,24 +54,32 @@ export struct AppListView {
     this.recentCacheIds = []
     this.recentCacheIndexById = {}
     this.sortRefreshTick += 1
+    this.rebuildVisibleState()
   }
 
-  private filteredItems(kind: AppItemKind): AppItemVM[] {
-    return this.searchedItems().filter((item: AppItemVM) => item.kind === kind)
+  @Monitor('items')
+  private onItemsChange(): void {
+    this.rebuildVisibleState()
+  }
+
+  @Monitor('externalSearchQuery')
+  private onExternalSearchQueryChange(): void {
+    this.rebuildVisibleState()
   }
 
   private visibleItems(): AppItemVM[] {
-    if (this.selectedFilter === 'all') {
-      return this.searchedItems()
+    return this.visibleCache
+  }
+
+  private filterCount(filter: AppListFilter): number {
+    if (filter === 'all') {
+      return this.allCount
     }
-    return this.filteredItems(this.selectedFilter)
+    return filter === 'game' ? this.gameCount : this.appCount
   }
 
   private filterText(filter: AppListFilter): string {
-    if (filter === 'all') {
-      return `全部 ${this.searchedItems().length}`
-    }
-    return `${this.kindTitle(filter)} ${this.filteredItems(filter).length}`
+    return `${filter === 'all' ? '全部' : this.kindTitle(filter)} ${this.filterCount(filter)}`
   }
 
   private isFilterSelected(filter: AppListFilter): boolean {
@@ -166,6 +180,7 @@ export struct AppListView {
     this.activeSortMode = mode
     this.sortRefreshTick += 1
     this.appPreferences.saveListSortMode(this.activeSortMode)
+    this.rebuildVisibleState()
   }
 
   private emptyText(): string {
@@ -192,7 +207,7 @@ export struct AppListView {
     return this.externalSearchQuery
   }
 
-  private searchedItems(): AppItemVM[] {
+  private sortedSearchedItems(): AppItemVM[] {
     const query = this.normalizedSearchQuery()
     const matched = query.length === 0
       ? this.items
@@ -233,6 +248,27 @@ export struct AppListView {
     return [...matched].sort((left: AppItemVM, right: AppItemVM) => left.name.localeCompare(right.name))
   }
 
+  private rebuildVisibleState(): void {
+    const sorted = this.sortedSearchedItems()
+    let gameCount = 0
+    let appCount = 0
+    for (const item of sorted) {
+      if (item.kind === 'game') {
+        gameCount += 1
+      } else {
+        appCount += 1
+      }
+    }
+    this.allCount = sorted.length
+    this.gameCount = gameCount
+    this.appCount = appCount
+    if (this.selectedFilter === 'all') {
+      this.visibleCache = [...sorted]
+      return
+    }
+    this.visibleCache = sorted.filter((item: AppItemVM) => item.kind === this.selectedFilter)
+  }
+
   private matchesSearch(item: AppItemVM, query: string): boolean {
     const source = `${item.name} ${item.fileName} ${item.description ?? ''}`.toLowerCase()
     return source.includes(query)
@@ -268,103 +304,113 @@ export struct AppListView {
       .border({ width: this.isFilterSelected(filter) ? 1 : 0, color: $r('app.color.app_surface_border') })
       .onClick(() => {
         this.selectedFilter = filter
+        this.rebuildVisibleState()
       })
   }
 
   @Builder
   private FilterBar() {
-    ListItem() {
-      Row({ space: 2 }) {
-        this.FilterButton('all')
-        this.FilterButton('game')
-        this.FilterButton('app')
-      }
-      .width('100%')
-      .height(38)
-      .padding({ left: 2, right: 2 })
-      .borderRadius(19)
-      .backgroundColor($r('app.color.app_surface'))
-      .border({ width: 1, color: $r('app.color.app_surface_border') })
-      .shadow({
-        radius: 14,
-        color: '#24385018',
-        offsetX: 0,
-        offsetY: 6
-      })
-      .margin({ top: 0, bottom: 8 })
+    Row({ space: 2 }) {
+      this.FilterButton('all')
+      this.FilterButton('game')
+      this.FilterButton('app')
     }
-    .selectable(false)
+    .width('100%')
+    .height(38)
+    .padding({ left: 2, right: 2 })
+    .borderRadius(19)
+    .backgroundColor($r('app.color.app_surface'))
+    .border({ width: 1, color: $r('app.color.app_surface_border') })
+    .shadow({
+      radius: 14,
+      color: '#24385018',
+      offsetX: 0,
+      offsetY: 6
+    })
+    .margin({ top: 0, bottom: 8 })
   }
 
   @Builder
   private SearchBar() {
-    ListItem() {
-      Row({ space: 10 }) {
-        Image($r('sys.media.ohos_ic_public_search_filled'))
-          .width(18)
-          .height(18)
-          .fillColor($r('app.color.app_accent_text'))
-          .opacity(0.72)
+    Row({ space: 10 }) {
+      Image($r('sys.media.ohos_ic_public_search_filled'))
+        .width(18)
+        .height(18)
+        .fillColor($r('app.color.app_accent_text'))
+        .opacity(0.72)
 
-        TextInput({ placeholder: '搜索 MRP', text: this.localSearchQuery })
-          .fontSize(15)
-          .fontColor($r('sys.color.ohos_id_color_text_primary'))
-          .placeholderColor($r('sys.color.ohos_id_color_text_hint'))
-          .caretColor($r('sys.color.ohos_id_color_emphasize'))
-          .height(40)
-          .layoutWeight(1)
-          .backgroundColor($r('sys.color.ohos_id_color_titlebar_bg_transparent'))
-          .padding({ left: 0, right: 0 })
-          .onChange((value: string) => {
-            this.localSearchQuery = value
-          })
+      TextInput({ placeholder: '搜索 MRP', text: this.localSearchQuery })
+        .fontSize(15)
+        .fontColor($r('sys.color.ohos_id_color_text_primary'))
+        .placeholderColor($r('sys.color.ohos_id_color_text_hint'))
+        .caretColor($r('sys.color.ohos_id_color_emphasize'))
+        .height(40)
+        .layoutWeight(1)
+        .backgroundColor($r('sys.color.ohos_id_color_titlebar_bg_transparent'))
+        .padding({ left: 0, right: 0 })
+        .onChange((value: string) => {
+          this.localSearchQuery = value
+          this.rebuildVisibleState()
+        })
 
-        if (this.normalizedSearchQuery().length > 0) {
-          Column() {
-            Image($r('sys.media.ohos_ic_public_input_cancel'))
-              .width(16)
-              .height(16)
-              .fillColor($r('sys.color.ohos_id_color_text_secondary'))
-              .opacity(0.68)
-          }
-            .width(30)
-            .height(30)
-            .borderRadius(15)
-            .justifyContent(FlexAlign.Center)
-            .alignItems(HorizontalAlign.Center)
-            .backgroundColor($r('sys.color.ohos_id_color_click_effect'))
-            .onClick(() => {
-              this.localSearchQuery = ''
-            })
+      if (this.normalizedSearchQuery().length > 0) {
+        Column() {
+          Image($r('sys.media.ohos_ic_public_input_cancel'))
+            .width(16)
+            .height(16)
+            .fillColor($r('sys.color.ohos_id_color_text_secondary'))
+            .opacity(0.68)
         }
+          .width(30)
+          .height(30)
+          .borderRadius(15)
+          .justifyContent(FlexAlign.Center)
+          .alignItems(HorizontalAlign.Center)
+          .backgroundColor($r('sys.color.ohos_id_color_click_effect'))
+          .onClick(() => {
+            this.localSearchQuery = ''
+            this.rebuildVisibleState()
+          })
       }
-      .width('100%')
-      .height(48)
-      .padding({ left: 14, right: 10, top: 4, bottom: 4 })
-      .borderRadius(24)
-      .backgroundColor($r('app.color.app_surface'))
-      .border({ width: 1, color: $r('app.color.app_surface_border') })
-      .shadow({
-        radius: 14,
-        color: '#24385018',
-        offsetX: 0,
-        offsetY: 6
-      })
-      .margin({ top: 0, bottom: 8 })
     }
-    .selectable(false)
+    .width('100%')
+    .height(48)
+    .padding({ left: 14, right: 10, top: 4, bottom: 4 })
+    .borderRadius(24)
+    .backgroundColor($r('app.color.app_surface'))
+    .border({ width: 1, color: $r('app.color.app_surface_border') })
+    .shadow({
+      radius: 14,
+      color: '#24385018',
+      offsetX: 0,
+      offsetY: 6
+    })
+    .margin({ top: 0, bottom: 8 })
   }
 
   @Builder
   private TopSafeGap() {
     if (this.topSafeGap > 0) {
-      ListItem() {
-        Column()
-          .width('100%')
-          .height(this.topSafeGap)
-      }
-      .selectable(false)
+      Column()
+        .width('100%')
+        .height(this.topSafeGap)
     }
+  }
+
+  @Builder
+  private StickyHeader() {
+    Column({ space: 0 }) {
+      this.TopSafeGap()
+      if (this.showSearch) {
+        this.SearchBar()
+      }
+      if (this.showFilters) {
+        this.FilterBar()
+      }
+    }
+    .width('100%')
+    .padding({ left: 16, right: 16, top: 0, bottom: 8 })
+    .backgroundColor($r('sys.color.ohos_id_color_titlebar_bg_transparent'))
   }
 
   @Builder
@@ -534,6 +580,7 @@ export struct AppListView {
       }
       .width('100%')
       .padding({ left: 60 })
+      .margin({ bottom: 2 })
     }
     .width('100%')
   }
@@ -656,42 +703,70 @@ export struct AppListView {
       }
       .width('100%')
       .padding({ left: 56 })
-      .visibility(this.visibleItems().length-1 == index ? Visibility.None : Visibility.Visible)
+      .visibility(this.visibleCache.length - 1 === index ? Visibility.None : Visibility.Visible)
     }
     .width('100%')
   }
 
   @Builder
   private Items() {
-    if (this.visibleItems().length > 0) {
-      ListItem() {
-        Column() {
-          if (this.showHeader) {
+    if (this.visibleCache.length > 0) {
+      if (this.showHeader) {
+        ListItem() {
+          Column() {
             this.LocalFilesHeader()
           }
-          ForEach(this.visibleItems(), (item: AppItemVM,index:number) => {
-            this.ItemCard(item,index)
-          }, (item: AppItemVM) => item.id)
+          .width('100%')
+          .backgroundColor($r('app.color.app_surface'))
+          .borderRadius({ topLeft: 20, topRight: 20, bottomLeft: 0, bottomRight: 0 })
+          .border({
+            width: {
+              left: 1,
+              right: 1,
+              top: 1,
+              bottom: 0
+            },
+            color: $r('app.color.app_surface_border')
+          })
+          .shadow({
+            radius: 18,
+            color: '#24385022',
+            offsetX: 0,
+            offsetY: 8
+          })
+          .margin({ top: 2, bottom: 0 })
         }
-        .width('100%')
-        .backgroundColor($r('app.color.app_surface'))
-        .borderRadius(20)
-        .border({ width: 1, color: $r('app.color.app_surface_border') })
-        .shadow({
-          radius: 18,
-          color: '#24385022',
-          offsetX: 0,
-          offsetY: 8
-        })
-        .margin({ top: 2, bottom: 8 })
+        .selectable(false)
       }
-      .selectable(false)
+      ForEach(this.visibleCache, (item: AppItemVM,index:number) => {
+        ListItem() {
+          Column() {
+            this.ItemCard(item,index)
+          }
+          .width('100%')
+          .backgroundColor($r('app.color.app_surface'))
+          .borderRadius(index === this.visibleCache.length - 1
+            ? { topLeft: 0, topRight: 0, bottomLeft: 20, bottomRight: 20 }
+            : 0)
+          .border({
+            width: index === this.visibleCache.length - 1
+              ? { left: 1, right: 1, top: 0, bottom: 1 }
+              : { left: 1, right: 1, top: 0, bottom: 0 },
+            color: $r('app.color.app_surface_border')
+          })
+          .margin({
+            top: 0,
+            bottom: index === this.visibleCache.length - 1 ? 8 : 0
+          })
+        }
+        .selectable(false)
+      }, (item: AppItemVM) => item.id)
     }
   }
 
   @Builder
   private FilterEmptyState() {
-    if (this.visibleItems().length === 0) {
+    if (this.visibleCache.length === 0) {
       ListItem() {
         Column({ space: 7 }) {
           Text(this.emptyText())
@@ -724,27 +799,22 @@ export struct AppListView {
   }
 
   build() {
-    List({ scroller: this.scroller }) {
-      ListItem() {
-        Text(`${this.sortRefreshTick}-${this.activeSortMode}-${this.recentAppIdsText}`).fontSize(1).opacity(0)
+    Column() {
+      Text(`${this.sortRefreshTick}-${this.activeSortMode}-${this.recentAppIdsText}-${this.visibleCache.length}`).fontSize(1).opacity(0)
+      this.StickyHeader()
+      List({ scroller: this.scroller }) {
+        this.Items()
+        this.FilterEmptyState()
+        this.BottomSafeTail()
       }
-      .height(1)
-      .selectable(false)
-      this.TopSafeGap()
-      if (this.showSearch) {
-        this.SearchBar()
-      }
-      if (this.showFilters) {
-        this.FilterBar()
-      }
-      this.Items()
-      this.FilterEmptyState()
-      this.BottomSafeTail()
+      .width('100%')
+      .layoutWeight(1)
+      .padding({ left: 16, right: 16, top: 0, bottom: 0 })
+      .backgroundColor($r('sys.color.ohos_id_color_titlebar_bg_transparent'))
+      .edgeEffect(EdgeEffect.Spring)
     }
     .width('100%')
     .layoutWeight(1)
-    .padding({ left: 16, right: 16, top: 0, bottom: 0 })
     .backgroundColor($r('sys.color.ohos_id_color_titlebar_bg_transparent'))
-    .edgeEffect(EdgeEffect.Spring)
   }
 }

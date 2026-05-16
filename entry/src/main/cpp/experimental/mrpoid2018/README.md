@@ -10,18 +10,17 @@ breaking the working emulator.
 
 ## Layout
 
-- `origin/`: copied mrpoid2018 native sources used as a read-only reference
-  snapshot. Prebuilt `.a`/`.so` binaries were not copied.
+- `origin/`: not included in the public tree. Keep any local read-only
+  reference snapshot outside this repository.
 - `Mrpoid2018Backend.*`: a HarmonyOS-facing backend skeleton with the same
   lifecycle shape as the current runtime.
 - `PORTING_NOTES.md`: current blockers and porting order.
 
 ## Rules
 
-Do not modify files under `origin/` directly. Put HarmonyOS-specific edits in a
-separate port layer so we can compare behavior against the original source and
-audit what changed.
+If you keep a local reference snapshot, do not modify it directly. Put
+HarmonyOS-specific edits in a separate port layer so behavior remains auditable.
 
 Do not ship this backend until licensing is clarified. The upstream project is
-described as open source, but this local copy does not include a clear license
-covering the native runtime and commercial distribution.
+described as open source, but this experiment was intentionally separated from
+the public repository because redistribution terms remain unclear.

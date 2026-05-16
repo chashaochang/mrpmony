@@ -67,24 +67,7 @@ export class NativeAppAdapter {
       .filter((name: string) => name.toLowerCase().endsWith('.mrp'))
       .filter((name: string) => !this.isHiddenRuntimeMrp(name))
       .sort((a: string, b: string) => a.localeCompare(b))
-    const result: NativeInstalledAppDTO[] = []
-    for (const fileName of appFiles) {
-      const metadata = this.lookupCatalog(fileName)
-      const filePath = `${mythroadDir}/${fileName}`
-      const fileStat = this.fileStat(filePath)
-      result.push({
-        appId: fileName,
-        name: metadata?.displayName || this.displayName(fileName),
-        fileName,
-        description: metadata?.description,
-        icon: undefined,
-        version: undefined,
-        addedAt: fileStat?.mtime,
-        sizeBytes: fileStat?.size,
-        runnable: true
-      })
-    }
-    return result
+    return this.buildInstalledAppsAsync(mythroadDir, appFiles)
   }
 
   async deleteInstalledApp(appId: string, options?: DeleteInstalledAppOptions): Promise<void> {
@@ -319,5 +302,42 @@ export class NativeAppAdapter {
       output += '\uFFFD'
     }
     return output
+  }
+
+  private buildInstalledAppsAsync(mythroadDir: string, appFiles: string[]): Promise<NativeInstalledAppDTO[]> {
+    return new Promise<NativeInstalledAppDTO[]>((resolve: (value: NativeInstalledAppDTO[]) => void) => {
+      const result: NativeInstalledAppDTO[] = []
+      let index = 0
+      const batchSize = 24
+      const processBatch = (): void => {
+        const end = Math.min(index + batchSize, appFiles.length)
+        while (index < end) {
+          const fileName = appFiles[index]
+          const metadata = this.lookupCatalog(fileName)
+          const filePath = `${mythroadDir}/${fileName}`
+          const fileStat = this.fileStat(filePath)
+          result.push({
+            appId: fileName,
+            name: metadata?.displayName || this.displayName(fileName),
+            fileName,
+            description: metadata?.description,
+            icon: undefined,
+            version: undefined,
+            addedAt: fileStat?.mtime,
+            sizeBytes: fileStat?.size,
+            runnable: true
+          })
+          index += 1
+        }
+        if (index >= appFiles.length) {
+          resolve(result)
+          return
+        }
+        setTimeout((): void => {
+          processBatch()
+        }, 0)
+      }
+      processBatch()
+    })
   }
 }

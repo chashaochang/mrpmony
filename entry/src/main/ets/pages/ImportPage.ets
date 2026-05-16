@@ -118,25 +118,6 @@ export struct ImportPage {
     return `约 ${seconds} 秒`
   }
 
-  private totalSizeText(): string {
-    let totalMb = 0
-    let knownCount = 0
-    for (const item of this.previewItems) {
-      const size = item.sizeText ?? ''
-      if (size.endsWith('MB')) {
-        totalMb += Number(size.replace('MB', '').trim())
-        knownCount += 1
-      } else if (size.endsWith('KB')) {
-        totalMb += Number(size.replace('KB', '').trim()) / 1024
-        knownCount += 1
-      }
-    }
-    if (knownCount === 0 || Number.isNaN(totalMb)) {
-      return `${this.previewItems.length} 项`
-    }
-    return `${totalMb.toFixed(totalMb >= 10 ? 1 : 2)} MB`
-  }
-
   @Builder
   private LocalSaveBanner() {
     Row({ space: 12 }) {
@@ -238,7 +219,7 @@ export struct ImportPage {
             .fontSize(19)
             .fontWeight(FontWeight.Bold)
             .fontColor($r('sys.color.ohos_id_color_text_primary'))
-          Text(`共 ${this.totalSizeText()}`)
+          Text(`可导入 ${this.validPreviewCount} 个`)
             .fontSize(13)
             .fontColor($r('sys.color.ohos_id_color_text_secondary'))
             .maxLines(1)
@@ -275,8 +256,6 @@ export struct ImportPage {
         ForEach(this.previewItems, (item: PackagePreviewVM) => {
           PackagePreviewCard({
             name: item.name,
-            version: item.version ?? '',
-            sizeText: item.sizeText ?? '',
             valid: item.valid
           })
         }, (item: PackagePreviewVM) => item.name)
@@ -317,7 +296,6 @@ export struct ImportPage {
       .padding({ left: 16, right: 16, top: 16, bottom: 8 })
       .alignItems(VerticalAlign.Center)
 
-      this.PlanRow('目标位置', '模拟器存储/MRP')
       this.PlanRow('可导入', `${this.validPreviewCount} 个`)
       this.PlanRow('预计耗时', this.estimateTimeText())
     }

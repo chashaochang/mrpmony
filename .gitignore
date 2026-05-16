@@ -30,3 +30,8 @@ AppScope/*.mobileprovision
 .tmp_screens/
 .tmp_key_preview*.png
 tmp/
+
+# Screenshots
+screenshots/*.jpg
+screenshots/*.jpeg
+screenshots/.DS_Store

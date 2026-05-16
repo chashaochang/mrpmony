@@ -1,8 +1,6 @@
 @ComponentV2
 export struct PackagePreviewCard {
   @Param name: string = ''
-  @Param version: string = ''
-  @Param sizeText: string = ''
   @Param valid: boolean = false
 
   @Builder
@@ -73,14 +71,6 @@ export struct PackagePreviewCard {
           .maxLines(1)
           .textOverflow({ overflow: TextOverflow.Ellipsis })
           .width('100%')
-        Row({ space: 8 }) {
-          Text(this.sizeText || (this.version.length > 0 ? `版本 ${this.version}` : '未知大小'))
-            .fontSize(12)
-            .fontColor($r('sys.color.ohos_id_color_text_secondary'))
-            .maxLines(1)
-            .layoutWeight(1)
-        }
-        .width('100%')
       }
       .layoutWeight(1)
       .alignItems(HorizontalAlign.Start)

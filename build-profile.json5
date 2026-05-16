@@ -1,4 +1,6 @@
 {
+  // Replace these placeholder signing paths and passwords with your own local
+  // debug/release materials before building.
   "app": {
     "products": [
       {
@@ -7,6 +9,12 @@
         "runtimeOS": "HarmonyOS",
         "targetSdkVersion": "6.1.0(23)",
         "signingConfig": "default"
+      },{
+        "name": "release",
+        "compatibleSdkVersion": "6.1.0(23)",
+        "runtimeOS": "HarmonyOS",
+        "targetSdkVersion": "6.1.0(23)",
+        "signingConfig": "release"
       }
     ],
     "buildModeSet": [
@@ -22,13 +30,26 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "/Users/machunjiang/.ohos/config/default_mrpmony_gJbdcfmsaefB_Wc4lZB-HY_bqI_ukaYNtkHd9eeiUhw=.cer",
+          "certpath": "./AppScope/debug.cer",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001B20920F31BD0FA6846B1F09E2951613CCAF593EDC917F5BEA65052D5EB5DF40CED12E8FA05F2D1E",
-          "profile": "/Users/machunjiang/.ohos/config/default_mrpmony_gJbdcfmsaefB_Wc4lZB-HY_bqI_ukaYNtkHd9eeiUhw=.p7b",
+          "keyPassword": "REPLACE_ME",
+          "profile": "./AppScope/debug.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "/Users/machunjiang/.ohos/config/default_mrpmony_gJbdcfmsaefB_Wc4lZB-HY_bqI_ukaYNtkHd9eeiUhw=.p12",
-          "storePassword": "0000001B11478595630879D93DC8CF9BD17E93211A8B0EE60B1EE6DD672347D3BF312BF7DE956CE0E3A30E"
+          "storeFile": "./AppScope/debug.p12",
+          "storePassword": "REPLACE_ME"
+        }
+      },
+      {
+        "name": "release",
+        "type": "HarmonyOS",
+        "material": {
+          "storeFile": "./AppScope/release.p12",
+          "storePassword": "REPLACE_ME",
+          "keyAlias": "releaseKey",
+          "keyPassword": "REPLACE_ME",
+          "signAlg": "SHA256withECDSA",
+          "profile": "./AppScope/release.p7b",
+          "certpath": "./AppScope/release.cer"
         }
       }
     ]
@@ -42,6 +63,12 @@
           "name": "default",
           "applyToProducts": [
             "default"
+          ]
+        },
+        {
+          "name": "release",
+          "applyToProducts": [
+            "release"
           ]
         }
       ]

@@ -7,7 +7,7 @@ Date: 2026-05-09
 Run from the HarmonyOS project root:
 
 ```bash
-cd /Users/machunjiang/mrp_emulator/harmonyos-mrp
+cd /path/to/mrpmony
 /Applications/DevEco-Studio.app/Contents/tools/node/bin/node \
   /Applications/DevEco-Studio.app/Contents/tools/hvigor/bin/hvigorw.js assembleApp
 ```
@@ -21,14 +21,14 @@ BUILD SUCCESSFUL
 The signed debug HAP is generated at:
 
 ```text
-/Users/machunjiang/mrp_emulator/harmonyos-mrp/entry/build/default/outputs/default/entry-default-signed.hap
+/path/to/mrpmony/entry/build/default/outputs/default/entry-default-signed.hap
 ```
 
 ## Install
 
 ```bash
 /Applications/DevEco-Studio.app/Contents/sdk/default/openharmony/toolchains/hdc install -r \
-  /Users/machunjiang/mrp_emulator/harmonyos-mrp/entry/build/default/outputs/default/entry-default-signed.hap
+  /path/to/mrpmony/entry/build/default/outputs/default/entry-default-signed.hap
 ```
 
 Expected install result:
@@ -84,4 +84,3 @@ MRPDBG readFile gzip-ok file=game.ext
 Current ArkTS warnings about file APIs throwing exceptions are known. They do not block the debug build, but should be cleaned before release hardening.
 
 The NAPI import warning for `libmrp_napi.so` is also expected as long as the `.d.ts` declaration remains aligned with the native exports.
-

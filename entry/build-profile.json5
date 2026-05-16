@@ -11,6 +11,10 @@
     {
       "name": "default",
       "runtimeOS": "HarmonyOS"
+    },
+    {
+      "name": "release",
+      "runtimeOS": "HarmonyOS"
     }
   ]
 }
