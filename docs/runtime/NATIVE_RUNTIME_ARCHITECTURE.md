@@ -12,7 +12,7 @@ ArkTS pages
   -> libmrp_napi.so
   -> MrpFacade
   -> MrpRuntime
-  -> vmrp-core
+  -> third_party/vmrp-core
   -> Unicorn ARM emulation
 ```
 
@@ -60,10 +60,10 @@ Key files:
 
 Most compatibility fixes live in:
 
-- `vmrp-core/bridge.c`
-- `vmrp-core/vmrp.c`
-- `vmrp-core/fileLib.c`
-- `vmrp-core/mythroad/*`
+- `entry/src/main/cpp/third_party/vmrp-core/bridge.c`
+- `entry/src/main/cpp/third_party/vmrp-core/vmrp.c`
+- `entry/src/main/cpp/third_party/vmrp-core/fileLib.c`
+- `entry/src/main/cpp/third_party/vmrp-core/mythroad/*`
 
 ## Frame Rendering
 
@@ -97,4 +97,3 @@ ArkTS sends virtual key touch events as down/up pairs. Native filters:
 - stray up for a key that was not pressed.
 
 This keeps rapid touch delivery from creating stuck or repeated key states inside the MRP VM.
-

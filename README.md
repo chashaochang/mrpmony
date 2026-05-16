@@ -12,14 +12,14 @@ not stored here.
 - HarmonyOS / DevEco project skeleton
 - ArkTS pages, list management, import flow, settings, and runtime UI
 - Native NAPI bridge and host-side rendering/input glue
+- Vendored runtime dependency modules under `entry/src/main/cpp/third_party/`
 - Store screenshots under `screenshots/store/`
 
 ## What is not in this repo
 
 - Real local signing certificates, keystores, and passwords
 - `local.properties` for a specific machine
-- The private `mrpoid2018/origin` reference snapshot
-- A vendored copy of external sibling dependencies such as `vmrp-core/`
+- Private machine-specific SDK or signing configuration
 
 ## Local setup
 
@@ -34,14 +34,10 @@ cp local.properties.example local.properties
 
 ## Build note
 
-`entry/src/main/cpp/CMakeLists.txt` expects these sibling directories outside
-this repo:
+`entry/src/main/cpp/CMakeLists.txt` now builds against vendored modules:
 
-- `../vmrp-core`
-- `../unicorn-src-proxy`
-
-If your local layout differs, update the paths in
-`entry/src/main/cpp/CMakeLists.txt`.
+- `entry/src/main/cpp/third_party/vmrp-core`
+- `entry/src/main/cpp/third_party/unicorn`
 
 ## Open-source notes
 

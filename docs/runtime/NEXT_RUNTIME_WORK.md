@@ -18,8 +18,8 @@ Host-side write semantics are now implemented for sandbox-backed saves/configs. 
 
 Focus files:
 
-- `vmrp-core/bridge.c`
-- `vmrp-core/fileLib.c`
+- `entry/src/main/cpp/third_party/vmrp-core/bridge.c`
+- `entry/src/main/cpp/third_party/vmrp-core/fileLib.c`
 - `harmonyos-mrp/entry/src/main/ets/adapters/RuntimeAssetBootstrap.ts`
 
 Risks:
@@ -37,7 +37,7 @@ Focus files:
 
 - `entry/src/main/cpp/runtime/MrpAudioBridge.cpp`
 - `entry/src/main/cpp/runtime/VmrpHostBridge.cpp`
-- `vmrp-core/bridge.c`
+- `entry/src/main/cpp/third_party/vmrp-core/bridge.c`
 
 Minimum target:
 

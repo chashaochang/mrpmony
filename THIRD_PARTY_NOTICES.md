@@ -3,27 +3,26 @@
 This repository has been cleaned for public source release, but a few runtime
 dependencies still matter when you build or redistribute the app.
 
-## Local-only items removed from source control
-
-- Real HarmonyOS signing certificates, profiles, and keystores
-- Private machine paths from `build-profile.json5`
-- The copied `mrpoid2018/origin` experiment snapshot
-
 ## External native dependencies
 
 ### vMRP core
 
-The native runtime is wired against a sibling `vmrp-core/` directory through
-`entry/src/main/cpp/CMakeLists.txt`. That dependency is not vendored inside this
-repository. Review the upstream project license and keep your redistribution
-terms compatible with it before publishing binaries.
+The native runtime is built from the vendored module at:
+
+- `entry/src/main/cpp/third_party/vmrp-core`
+
+That code path is currently part of the shipped native runtime. Review the
+upstream license and keep your redistribution terms compatible with it before
+publishing binaries.
 
 ### Unicorn Engine
 
-Local builds also expect Unicorn headers from a sibling `unicorn-src-proxy/`
-directory, and the app currently links against the prebuilt shared libraries in:
+The repository now carries the Unicorn headers under:
 
-- `entry/src/main/libs/arm64-v8a/libunicorn.so`
+- `entry/src/main/cpp/third_party/unicorn/include`
+
+The app links against the prebuilt shared library in:
+
 - `entry/src/main/libs/arm64-v8a/libunicorn.so.2`
 
 When redistributing binaries, keep the upstream Unicorn copyright and license

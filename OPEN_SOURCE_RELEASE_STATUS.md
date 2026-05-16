@@ -8,8 +8,9 @@ still need an explicit go/no-go decision before publishing binaries:
 - Removed private signing paths and encrypted passwords from
   `build-profile.json5`
 - Kept `local.properties` out of source control
-- Removed the copied `mrpoid2018` reference snapshot from the public tree
+- Removed the unused experimental runtime branch from the public tree
 - Added third-party and repository setup notes
+- Moved the active `vmrp` and `unicorn` dependency files into vendored modules
 
 ## Still review before public binary distribution
 
@@ -17,8 +18,9 @@ still need an explicit go/no-go decision before publishing binaries:
 
 The current native stack expects:
 
-- `vmrp-core/` licensed under GPLv3
-- Unicorn shared libraries whose local source tree ships a GPLv2 `COPYING`
+- vendored `vmrp` sources under `entry/src/main/cpp/third_party/vmrp-core`
+- vendored Unicorn headers plus the prebuilt shared library under
+  `entry/src/main/cpp/third_party/unicorn` and `entry/src/main/libs/arm64-v8a`
 
 If you plan to publish binaries, confirm your exact redistribution model and
 license compatibility for that combined stack.

@@ -48,8 +48,8 @@ The remaining work should be treated as compatibility hardening, not basic bring
 
 Do not change app-list behavior while debugging runtime compatibility unless the bug is proven to be in selection/routing. Most remaining issues should be investigated inside:
 
-- `vmrp-core/bridge.c`
-- `vmrp-core/vmrp.c`
+- `entry/src/main/cpp/third_party/vmrp-core/bridge.c`
+- `entry/src/main/cpp/third_party/vmrp-core/vmrp.c`
 - `harmonyos-mrp/entry/src/main/cpp/runtime`
 - `harmonyos-mrp/entry/src/main/cpp/platform`
 - `harmonyos-mrp/entry/src/main/ets/components/runtime`
