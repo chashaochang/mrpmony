@@ -15,6 +15,7 @@ import {
 import { hdsMaterial } from '@hms.hds.hdsMaterial'
 import { AppListPage } from './AppListPage'
 import { AboutPage } from './AboutPage'
+import { AddGroupPage } from './AddGroupPage'
 import { AppManagePage } from './AppManagePage'
 import { ImportPage } from './ImportPage'
 import { RecentRunPage } from './RecentRunPage'
@@ -95,6 +96,10 @@ struct ShellRootPage {
 
   private goToAbout(): void {
     this.pathStack.pushPathByName('about', new Object())
+  }
+
+  private goToAddGroup(): void {
+    this.pathStack.pushPathByName('addGroup', new Object())
   }
 
   private goToPrivacyPolicy(): void {
@@ -484,13 +489,81 @@ struct ShellRootPage {
       HdsNavDestination() {
         AboutPage({
           scroller: this.settingsScroller,
-          onOpenPrivacyPolicy: () => this.goToPrivacyPolicy()
+          onOpenPrivacyPolicy: () => this.goToPrivacyPolicy(),
+          onOpenGroupPage: () => this.goToAddGroup()
         })
       }
       .titleBar({
         content: {
           title: {
             mainTitle: '关于',
+            mainTitleSize: TitleSize.TITLE_S
+          },
+          divider: {
+            showType: DividerShowType.AUTO
+          }
+        },
+        style: {
+          scrollEffectOpts: {
+            scrollEffectType: ScrollEffectType.IMMERSIVE_GRADIENT_BLUR
+          },
+          originalStyle: {
+            backgroundStyle: {
+              backgroundColor: $r('sys.color.ohos_id_color_titlebar_bg_transparent'),
+              blurRadius: 48,
+              maskExtraHeight: 32
+            },
+            contentStyle: {
+              titleStyle: {
+                mainTitleColor: $r('sys.color.ohos_id_color_titlebar_text'),
+                subTitleColor: $r('sys.color.ohos_id_color_titlebar_subtitle_text')
+              },
+              backIconStyle: {
+                backgroundColor: $r('app.color.app_surface_muted'),
+                iconColor: $r('app.color.app_accent_text')
+              },
+              dividerStyle: {
+                dividerColor: $r('sys.color.ohos_id_color_titlebar_bg_transparent')
+              }
+            }
+          },
+          scrollEffectStyle: {
+            backgroundStyle: {
+              backgroundColor: $r('sys.color.ohos_id_color_titlebar_bg'),
+              blurRadius: 48,
+              maskExtraHeight: 32
+            },
+            contentStyle: {
+              titleStyle: {
+                mainTitleColor: $r('sys.color.ohos_id_color_titlebar_text'),
+                subTitleColor: $r('sys.color.ohos_id_color_titlebar_subtitle_text')
+              },
+              backIconStyle: {
+                backgroundColor: $r('app.color.app_surface_muted'),
+                iconColor: $r('app.color.app_accent_text')
+              },
+              dividerStyle: {
+                dividerColor: $r('sys.color.ohos_id_color_titlebar_bg_transparent')
+              }
+            }
+          },
+          systemMaterialEffect: {
+            materialType: this.materialType,
+            materialLevel: this.materialLevel
+          }
+        }
+      })
+      .titleMode(HdsNavDestinationTitleMode.MODAL)
+      .hideToolBar(true)
+      .onBackPressed(() => this.popDestination())
+    } else if (name === 'addGroup') {
+      HdsNavDestination() {
+        AddGroupPage()
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '加入群聊',
             mainTitleSize: TitleSize.TITLE_S
           },
           divider: {

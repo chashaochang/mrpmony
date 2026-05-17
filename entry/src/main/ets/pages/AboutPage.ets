@@ -1,10 +1,8 @@
-import { common, wantConstant } from "@kit.AbilityKit"
-import { AlertDialogV2, AdvancedDialogV2Button } from "@kit.ArkUI"
-
 @ComponentV2
 export struct AboutPage {
   @Param scroller: Scroller = new Scroller()
   @Param onOpenPrivacyPolicy?: () => void = undefined
+  @Param onOpenGroupPage?: () => void = undefined
 
   @Builder
   private TopSafeGapItem() {
@@ -170,34 +168,8 @@ export struct AboutPage {
     ListItem() {
       Column({ space: 0 }) {
         this.AboutRow('QQ群聊', '加入', '', false, () => {
-          try {
-            let abilityContext = AppStorage.get('abilityContext') as common.UIAbilityContext
-            abilityContext.startAbility({
-              uri: 'mqqapi://card/show_pslcard?src_type=internal&version=1&uin=1095261513&card_type=group&source=qrcode',
-              flags: wantConstant.Flags.FLAG_START_WITHOUT_TIPS
-            }).catch(() => {
-              AlertDialogV2({
-                primaryTitle: '提示',
-                content: 'QQ群:1095261513',
-                primaryButton: new AdvancedDialogV2Button({
-                  content: '确认',
-                  action: () => {
-
-                  },
-                })
-              })
-            })
-          } catch (e) {
-            AlertDialogV2({
-              primaryTitle: '提示',
-              content: 'QQ群:991893385',
-              primaryButton: new AdvancedDialogV2Button({
-                content: '确认',
-                action: () => {
-
-                },
-              })
-            })
+          if (this.onOpenGroupPage) {
+            this.onOpenGroupPage()
           }
         })
       }
