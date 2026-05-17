@@ -1,8 +1,25 @@
+import { bundleManager } from '@kit.AbilityKit'
+
 @ComponentV2
 export struct AboutPage {
   @Param scroller: Scroller = new Scroller()
   @Param onOpenPrivacyPolicy?: () => void = undefined
   @Param onOpenGroupPage?: () => void = undefined
+  @Local appVersion: string = '--'
+
+  aboutToAppear(): void {
+    this.loadAppVersion()
+  }
+
+  private loadAppVersion(): void {
+    try {
+      const info = bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_DEFAULT)
+      this.appVersion = info.versionName && info.versionName.length > 0 ? info.versionName : '--'
+    } catch (error) {
+      console.warn(`load app version failed: ${error instanceof Error ? error.message : JSON.stringify(error)}`)
+      this.appVersion = '--'
+    }
+  }
 
   @Builder
   private TopSafeGapItem() {
@@ -99,7 +116,7 @@ export struct AboutPage {
     ListItem() {
       Column({ space: 0 }) {
         this.AboutRow('应用名称', 'mrpmony')
-        this.AboutRow('当前版本', '1.0.0', undefined, false)
+        this.AboutRow('当前版本', this.appVersion, undefined, false)
       }
       .width('100%')
       .backgroundColor($r('app.color.app_surface'))
