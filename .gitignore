@@ -19,6 +19,7 @@ node_modules/
 .hvigor/
 entry/.cxx/
 local.properties
+build-profile.json5
 AppScope/*.p12
 AppScope/*.mobileprovision
 

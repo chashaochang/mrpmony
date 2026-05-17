@@ -1,6 +1,6 @@
 {
-  // Replace these placeholder signing paths and passwords with your own local
-  // debug/release materials before building.
+  // Copy this file to `build-profile.json5` and replace the placeholder
+  // signing materials with your own local debug/release config before build.
   "app": {
     "products": [
       {

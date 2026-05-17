@@ -13,6 +13,7 @@
 
 ```bash
 cp local.properties.example local.properties
+cp build-profile.json5.example build-profile.json5
 ```
 
 然后修改：
@@ -34,7 +35,7 @@ hwsdk.dir=/absolute/path/to/HarmonyOS/Sdk
 当前仓库已移除对不存在签名文件的硬引用。
 
 如果你要实际构建/运行：
-- 在 DevEco 中配置本地 debug signing
+- 在 `build-profile.json5` 中配置本地 debug signing
 - 或按团队规范补本地签名材料
 
 ---

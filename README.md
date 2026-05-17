@@ -24,12 +24,14 @@ not stored here.
 ## Local setup
 
 1. Copy `local.properties.example` to `local.properties`
-2. Fill in your local `hwsdk.dir`
-3. Replace the placeholder signing entries in `build-profile.json5`
+2. Copy `build-profile.json5.example` to `build-profile.json5`
+3. Fill in your local `hwsdk.dir`
+4. Replace the placeholder signing entries in `build-profile.json5`
 4. Open the project root in DevEco Studio
 
 ```bash
 cp local.properties.example local.properties
+cp build-profile.json5.example build-profile.json5
 ```
 
 ## Build note

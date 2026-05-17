@@ -6,8 +6,9 @@ still need an explicit go/no-go decision before publishing binaries:
 ## Done
 
 - Removed private signing paths and encrypted passwords from
-  `build-profile.json5`
+  `build-profile.json5.example`
 - Kept `local.properties` out of source control
+- Kept the real root `build-profile.json5` out of source control
 - Removed the unused experimental runtime branch from the public tree
 - Added third-party and repository setup notes
 - Moved the active `vmrp` and `unicorn` dependency files into vendored modules
