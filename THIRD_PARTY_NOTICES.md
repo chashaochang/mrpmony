@@ -25,6 +25,10 @@ The app links against the prebuilt shared library in:
 
 - `entry/src/main/libs/arm64-v8a/libunicorn.so.2`
 
+The OHOS rebuild path currently depends on a local patch to the Unicorn source
+tree `CMakeLists.txt` so it can recognize `CMAKE_SYSTEM_NAME STREQUAL "OHOS"`
+and map `OHOS_ARCH` to the Unicorn target architecture.
+
 When redistributing binaries, keep the upstream Unicorn copyright and license
 text with your release materials.
 
