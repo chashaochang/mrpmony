@@ -517,28 +517,6 @@ napi_value Gunzip(napi_env env, napi_callback_info info)
     return result;
 }
 
-napi_value InspectPureMrpPackage(napi_env env, napi_callback_info info)
-{
-    size_t argc = 1;
-    napi_value argv[1] = {nullptr};
-    napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
-
-    napi_value obj;
-    napi_create_object(env, &obj);
-    napi_value okValue;
-    napi_get_boolean(env, false, &okValue);
-    if (argc < 1 || argv[0] == nullptr) {
-        napi_set_named_property(env, obj, "ok", okValue);
-        napi_set_named_property(env, obj, "errorMessage", MakeString(env, "inspectPureMrpPackage requires a path"));
-        return obj;
-    }
-
-    const std::string path = GetStringArgument(env, argv[0]);
-    std::string errorMessage;
-    napi_set_named_property(env, obj, "ok", okValue);
-    napi_set_named_property(env, obj, "errorMessage", MakeString(env, errorMessage));
-    return obj;
-}
 }
 
 napi_value ExportMrpFacade(napi_env env, napi_value exports)
@@ -557,7 +535,6 @@ napi_value ExportMrpFacade(napi_env env, napi_value exports)
         {"release", nullptr, Release, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"releaseAsync", nullptr, ReleaseAsync, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"gunzip", nullptr, Gunzip, nullptr, nullptr, nullptr, napi_default, nullptr},
-        {"inspectPureMrpPackage", nullptr, InspectPureMrpPackage, nullptr, nullptr, nullptr, napi_default, nullptr},
     };
 
     napi_define_properties(env, exports, sizeof(descriptors) / sizeof(descriptors[0]), descriptors);

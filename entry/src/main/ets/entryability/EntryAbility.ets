@@ -4,7 +4,6 @@ import ConfigurationConstant from '@ohos.app.ability.ConfigurationConstant';
 import window from '@ohos.window';
 import hilog from '@ohos.hilog';
 import { configureRuntimeAssets } from '../adapters/RuntimeAssetBootstrap';
-import { runPureMrpBackendSmokeTest } from '../adapters/NativeSmokeTest';
 import { configureAppPreferences } from '../services/AppPreferences';
 
 const DOMAIN = 0xFF00;
@@ -29,9 +28,6 @@ export default class EntryAbility extends UIAbility {
         return;
       }
       hilog.info(DOMAIN, TAG, 'ShellRootPage loaded');
-      setTimeout(() => {
-        runPureMrpBackendSmokeTest();
-      }, 800);
     });
   }
 
