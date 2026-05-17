@@ -11,6 +11,10 @@ The native runtime is built from the vendored module at:
 
 - `entry/src/main/cpp/third_party/vmrp-core`
 
+Upstream project:
+
+- https://github.com/zengming00/vmrp
+
 That code path is currently part of the shipped native runtime. Review the
 upstream license and keep your redistribution terms compatible with it before
 publishing binaries.
@@ -20,6 +24,10 @@ publishing binaries.
 The repository now carries the Unicorn headers under:
 
 - `entry/src/main/cpp/third_party/unicorn/include`
+
+Upstream project:
+
+- https://github.com/unicorn-engine/unicorn
 
 The app links against the prebuilt shared library in:
 

@@ -46,6 +46,10 @@ cp build-profile.json5.example build-profile.json5
 
 - `entry/src/main/cpp/third_party/vmrp-core`
 
+上游参考项目：
+
+- https://github.com/zengming00/vmrp
+
 ### Unicorn
 
 仓库内已经带了：
@@ -56,6 +60,10 @@ cp build-profile.json5.example build-profile.json5
 如果你不想用仓库里现成的 `libunicorn.so.2`，可以自己重新编译，再替换或改路径。
 但要注意：OHOS 编译支持不是 Unicorn 上游天然带的，当前依赖的是我们本地
 打过补丁的 `unicorn-src-proxy/CMakeLists.txt`。
+
+上游项目：
+
+- https://github.com/unicorn-engine/unicorn
 
 具体看这里：
 
