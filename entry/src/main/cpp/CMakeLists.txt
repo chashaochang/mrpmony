@@ -34,4 +34,4 @@ target_include_directories(mrp_napi PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/napi
 )
 
-target_link_libraries(mrp_napi PRIVATE ace_napi.z ace_ndk.z hilog_ndk.z native_window ohaudio vmrp_core unicorn_headers unicorn_prebuilt)
+target_link_libraries(mrp_napi PRIVATE ace_napi.z ace_ndk.z hilog_ndk.z native_window ohaudio avplayer native_media_core vmrp_core unicorn_headers unicorn_prebuilt)

@@ -1,5 +1,6 @@
 import fs from '@ohos.file.fs'
-import { ensureRuntimeAssets, readBundledRawFile, runtimeMythroadDir } from './RuntimeAssetBootstrap'
+import { util } from '@kit.ArkTS'
+import { ensureRuntimeAssets, runtimeMythroadDir } from './RuntimeAssetBootstrap'
 
 export interface DeleteInstalledAppOptions {
   deleteRelatedData?: boolean
@@ -17,16 +18,10 @@ export interface NativeInstalledAppDTO {
   runnable: boolean
 }
 
-interface VmrpCatalogRecord {
-  file?: string
-  FileName?: string
-  DisplayName?: string
-  Desc?: string
-}
-
-interface VmrpCatalogMeta {
-  displayName: string
+interface MrpHeaderMeta {
+  appName?: string
   description?: string
+  version?: string
 }
 
 function errorToString(error: Object): string {
@@ -37,19 +32,25 @@ function errorToString(error: Object): string {
 }
 
 export class NativeAppAdapter {
-  private static readonly CATALOG_PATH: string = 'mrp/catalog/data.txt'
+  private static readonly MRP_HEADER_SIZE: number = 240
+  private static readonly MRP_APP_NAME_OFFSET: number = 28
+  private static readonly MRP_APP_NAME_SIZE: number = 24
+  private static readonly MRP_DESCRIPTION_OFFSET: number = 128
+  private static readonly MRP_DESCRIPTION_SIZE: number = 64
+  private static readonly MRP_VERSION_OFFSET: number = 72
   private static readonly HIDDEN_RUNTIME_MRPS: string[] = [
     'dsm_gm.mrp',
     'ydqtwo.mrp',
     'mpc.mrp',
     'flaengine.mrp'
   ]
-  private static catalogLoaded: boolean = false
-  private static catalogByKey: Map<string, VmrpCatalogMeta> = new Map()
+  private static readonly mrpTextDecoder: util.TextDecoder = util.TextDecoder.create('gbk', {
+    fatal: false,
+    ignoreBOM: true
+  })
 
   async listInstalledApps(): Promise<NativeInstalledAppDTO[]> {
     ensureRuntimeAssets()
-    this.ensureCatalogLoaded()
     const mythroadDir = runtimeMythroadDir()
     let files: string[] = []
     try {
@@ -205,103 +206,68 @@ export class NativeAppAdapter {
     return suffixIndex > 0 ? fileName.substring(0, suffixIndex) : fileName
   }
 
-  private lookupCatalog(fileName: string): VmrpCatalogMeta | undefined {
-    const key = fileName.toLowerCase()
-    const exact = NativeAppAdapter.catalogByKey.get(key)
-    if (exact) {
-      return exact
-    }
-    const baseName = this.displayName(fileName).toLowerCase()
-    return NativeAppAdapter.catalogByKey.get(baseName)
-  }
-
-  private ensureCatalogLoaded(): void {
-    if (NativeAppAdapter.catalogLoaded) {
-      return
-    }
-    NativeAppAdapter.catalogLoaded = true
-    const bytes = readBundledRawFile(NativeAppAdapter.CATALOG_PATH)
-    if (!bytes || bytes.length === 0) {
-      console.warn(`MRP catalog not found: ${NativeAppAdapter.CATALOG_PATH}`)
-      return
-    }
-
-    const content = this.decodeUtf8(bytes)
-    const lines = content.split('\n')
-    for (const line of lines) {
-      const text = line.trim()
-      if (text.length === 0) {
-        continue
+  private readMrpHeaderMeta(filePath: string): MrpHeaderMeta | undefined {
+    let file: fs.File | undefined = undefined
+    try {
+      file = fs.openSync(filePath, fs.OpenMode.READ_ONLY)
+      const buffer = new ArrayBuffer(NativeAppAdapter.MRP_HEADER_SIZE)
+      const readLength = fs.readSync(file.fd, buffer, {
+        offset: 0,
+        length: NativeAppAdapter.MRP_HEADER_SIZE
+      })
+      if (readLength < NativeAppAdapter.MRP_HEADER_SIZE) {
+        return undefined
       }
-      try {
-        const item = JSON.parse(text) as VmrpCatalogRecord
-        const displayName = (item.DisplayName || '').trim()
-        if (!displayName) {
-          continue
+      const bytes = new Uint8Array(buffer)
+      if (!this.hasMrpMagic(bytes)) {
+        return undefined
+      }
+      const appName = this.decodeMrpField(bytes, NativeAppAdapter.MRP_APP_NAME_OFFSET, NativeAppAdapter.MRP_APP_NAME_SIZE)
+      const description = this.decodeMrpField(bytes, NativeAppAdapter.MRP_DESCRIPTION_OFFSET, NativeAppAdapter.MRP_DESCRIPTION_SIZE)
+      const version = this.readLe32(bytes, NativeAppAdapter.MRP_VERSION_OFFSET).toString()
+      return {
+        appName: appName.length > 0 ? appName : undefined,
+        description: description.length > 0 ? description : undefined,
+        version
+      }
+    } catch (error) {
+      console.warn(`MRP header parse failed: ${filePath}: ${errorToString(error as Object)}`)
+      return undefined
+    } finally {
+      if (file) {
+        try {
+          fs.closeSync(file)
+        } catch (_error) {
         }
-        const description = (item.Desc || '').trim()
-        this.addCatalogEntry(item.file, displayName, description)
-        this.addCatalogEntry(item.FileName, displayName, description)
-      } catch (error) {
-        // Ignore malformed lines and continue loading valid metadata.
       }
     }
-    console.info(`MRP catalog loaded: ${NativeAppAdapter.catalogByKey.size} keys`)
   }
 
-  private addCatalogEntry(rawKey: string | undefined, displayName: string, description?: string): void {
-    if (!rawKey) {
-      return
-    }
-    const normalized = rawKey.trim().toLowerCase()
-    if (normalized.length === 0) {
-      return
-    }
-    if (NativeAppAdapter.catalogByKey.has(normalized)) {
-      return
-    }
-    NativeAppAdapter.catalogByKey.set(normalized, {
-      displayName,
-      description: description || undefined
-    })
+  private hasMrpMagic(bytes: Uint8Array): boolean {
+    return bytes[0] === 0x4D && bytes[1] === 0x52 && bytes[2] === 0x50 && bytes[3] === 0x47
   }
 
-  private decodeUtf8(bytes: Uint8Array): string {
-    let output = ''
-    let index = 0
-    while (index < bytes.length) {
-      const first = bytes[index++]
-      if ((first & 0x80) === 0) {
-        output += String.fromCharCode(first)
-        continue
-      }
-      if ((first & 0xE0) === 0xC0 && index < bytes.length) {
-        const second = bytes[index++]
-        const code = ((first & 0x1F) << 6) | (second & 0x3F)
-        output += String.fromCharCode(code)
-        continue
-      }
-      if ((first & 0xF0) === 0xE0 && index + 1 < bytes.length) {
-        const second = bytes[index++]
-        const third = bytes[index++]
-        const code = ((first & 0x0F) << 12) | ((second & 0x3F) << 6) | (third & 0x3F)
-        output += String.fromCharCode(code)
-        continue
-      }
-      if ((first & 0xF8) === 0xF0 && index + 2 < bytes.length) {
-        const second = bytes[index++]
-        const third = bytes[index++]
-        const fourth = bytes[index++]
-        let codePoint = ((first & 0x07) << 18) | ((second & 0x3F) << 12) | ((third & 0x3F) << 6) | (fourth & 0x3F)
-        codePoint -= 0x10000
-        const high = 0xD800 + (codePoint >> 10)
-        const low = 0xDC00 + (codePoint & 0x3FF)
-        output += String.fromCharCode(high, low)
-        continue
-      }
-      output += '\uFFFD'
+  private decodeMrpField(bytes: Uint8Array, offset: number, length: number): string {
+    const end = Math.min(bytes.length, offset + length)
+    let realEnd = offset
+    while (realEnd < end && bytes[realEnd] !== 0) {
+      realEnd += 1
     }
-    return output
+    while (realEnd > offset && bytes[realEnd - 1] <= 0x20) {
+      realEnd -= 1
+    }
+    if (realEnd <= offset) {
+      return ''
+    }
+    const field = new Uint8Array(bytes.buffer.slice(offset, realEnd))
+    return NativeAppAdapter.mrpTextDecoder.decodeToString(field, { stream: false }).trim()
+  }
+
+  private readLe32(bytes: Uint8Array, offset: number): number {
+    return (bytes[offset] |
+      (bytes[offset + 1] << 8) |
+      (bytes[offset + 2] << 16) |
+      (bytes[offset + 3] << 24)) >>> 0
   }
 
   private buildInstalledAppsAsync(mythroadDir: string, appFiles: string[]): Promise<NativeInstalledAppDTO[]> {
@@ -313,16 +279,16 @@ export class NativeAppAdapter {
         const end = Math.min(index + batchSize, appFiles.length)
         while (index < end) {
           const fileName = appFiles[index]
-          const metadata = this.lookupCatalog(fileName)
           const filePath = `${mythroadDir}/${fileName}`
           const fileStat = this.fileStat(filePath)
+          const metadata = this.readMrpHeaderMeta(filePath)
           result.push({
             appId: fileName,
-            name: metadata?.displayName || this.displayName(fileName),
+            name: metadata?.appName || this.displayName(fileName),
             fileName,
             description: metadata?.description,
             icon: undefined,
-            version: undefined,
+            version: metadata?.version,
             addedAt: fileStat?.mtime,
             sizeBytes: fileStat?.size,
             runnable: true

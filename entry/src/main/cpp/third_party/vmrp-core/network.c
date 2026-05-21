@@ -950,27 +950,45 @@ int32 my_recvfrom(int32 s, char* buf, int len, int32* ip, uint16* port) {
    MR_FAILED Socket已经被关闭或遇到了无法修复的错误。 
 */
 int32 my_recv(int32 s, char* buf, int len) {
-    logNetwork("recv socket=%d len=%d", s, len);
 #ifdef NETWORK_SUPPORT
     pthread_mutex_lock(&socketsMutex);
     mSocket* data = findSocketByIdLocked(s);
     SOCKET_T rawSock = data == NULL ? (SOCKET_T)-1 : data->s;
     pthread_mutex_unlock(&socketsMutex);
     if (data == NULL) {
+        logNetwork("recv socket=%d len=%d result=fail reason=invalid-socket", s, len);
         return MR_FAILED;
     }
     int ret = checkReadable(rawSock);
     if (ret == -1) {
+        logNetwork("recv socket=%d len=%d result=fail errno=%d", s, len, GET_SOCKET_ERROR());
         return MR_FAILED;
     } else if (ret == 0) {
         return 0;
     }
     ret = recv(rawSock, buf, len, 0);
-    if (ret == -1) {
+    if (ret > 0) {
+        logNetwork("recv socket=%d len=%d result=%d", s, len, ret);
+        return ret;
+    }
+    if (ret == 0) {
+        pthread_mutex_lock(&socketsMutex);
+        markSocketStateIfMatchLocked(s, rawSock, MR_FAILED, MR_FAILED);
+        pthread_mutex_unlock(&socketsMutex);
+        logNetwork("recv socket=%d len=%d result=eof", s, len);
         return MR_FAILED;
     }
-    return ret;
+    int err = GET_SOCKET_ERROR();
+    if (err == EWOULDBLOCK || err == EAGAIN) {
+        return 0;
+    }
+    pthread_mutex_lock(&socketsMutex);
+    markSocketStateIfMatchLocked(s, rawSock, MR_FAILED, MR_FAILED);
+    pthread_mutex_unlock(&socketsMutex);
+    logNetwork("recv socket=%d len=%d result=fail errno=%d", s, len, err);
+    return MR_FAILED;
 #else
+    logNetwork("recv socket=%d len=%d", s, len);
     logBlocked("recv");
     return MR_FAILED;
 #endif

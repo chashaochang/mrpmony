@@ -1,16 +1,26 @@
 #include "MrpAudioBridge.h"
 
 #include <algorithm>
+#include <cerrno>
 #include <cmath>
+#include <cstdio>
 #include <cstring>
 #include <hilog/log.h>
 #include <map>
 #include <mutex>
+#include <string>
 #include <vector>
 
+#include <fcntl.h>
+#include <multimedia/player_framework/avplayer.h>
+#include <multimedia/player_framework/avplayer_base.h>
+#include <multimedia/player_framework/native_averrors.h>
+#include <multimedia/player_framework/native_avformat.h>
 #include <ohaudio/native_audiorenderer.h>
 #include <ohaudio/native_audiostream_base.h>
 #include <ohaudio/native_audiostreambuilder.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 extern "C" {
 #include "header/types.h"
@@ -431,6 +441,46 @@ std::vector<int16_t> DecodePcmWav(const uint8_t *data, uint32_t len)
     return ResampleToStereo48k(decoded.data(), inputFrames, static_cast<int32_t>(sampleRate), channelCount);
 }
 
+bool IsCompressedSoundType(int32_t type)
+{
+    return type == MR_SOUND_MP3 || type == MR_SOUND_M4A || type == MR_SOUND_AMR || type == MR_SOUND_AMR_WB;
+}
+
+const char *CompressedSoundExtension(int32_t type)
+{
+    switch (type) {
+        case MR_SOUND_MP3:
+            return "mp3";
+        case MR_SOUND_M4A:
+            return "m4a";
+        case MR_SOUND_AMR:
+            return "amr";
+        case MR_SOUND_AMR_WB:
+            return "awb";
+        default:
+            return "bin";
+    }
+}
+
+bool WriteAll(int32_t fd, const uint8_t *data, uint32_t len)
+{
+    uint32_t written = 0;
+    while (written < len) {
+        const ssize_t ret = write(fd, data + written, len - written);
+        if (ret < 0) {
+            if (errno == EINTR) {
+                continue;
+            }
+            return false;
+        }
+        if (ret == 0) {
+            return false;
+        }
+        written += static_cast<uint32_t>(ret);
+    }
+    return true;
+}
+
 class MrpAudioPlayer {
 public:
     int32_t Play(int32_t type, const void *data, uint32_t dataLen, int32_t loop)
@@ -450,6 +500,8 @@ public:
             samples = DecodeRawPcm8k16Mono(bytes, dataLen);
         } else if (type == MR_SOUND_WAV) {
             samples = DecodePcmWav(bytes, dataLen);
+        } else if (IsCompressedSoundType(type)) {
+            return PlayCompressed(type, bytes, dataLen, loop);
         }
 
         if (samples.empty()) {
@@ -463,6 +515,7 @@ public:
                          type, dataLen, samples.size() / 2U, loop);
         }
 
+        StopCompressed(-1);
         if (!EnsureRenderer()) {
             return MR_FAILED;
         }
@@ -491,6 +544,7 @@ public:
 
     int32_t Stop(int32_t type)
     {
+        StopCompressed(type);
         {
             std::lock_guard<std::mutex> lock(mutex_);
             if (!active_) {
@@ -510,6 +564,7 @@ public:
 
     void Release()
     {
+        StopCompressed(-1);
         {
             std::lock_guard<std::mutex> lock(mutex_);
             active_ = false;
@@ -569,6 +624,209 @@ public:
     }
 
 private:
+    int32_t PlayCompressed(int32_t type, const uint8_t *data, uint32_t dataLen, int32_t loop)
+    {
+        StopRawPlayback();
+        StopCompressed(-1);
+
+        (void)mkdir(".tmp", S_IRWXU | S_IRWXG | S_IRWXO);
+        const std::string path = NextCompressedTempPath(type);
+        const int32_t writeFd = open(path.c_str(), O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+        if (writeFd < 0) {
+            OH_LOG_Print(LOG_APP, LOG_ERROR, 0xFF00, "MRP",
+                         "audio compressed temp open failed type=%{public}d path=%{public}s errno=%{public}d",
+                         type, path.c_str(), errno);
+            return MR_FAILED;
+        }
+        const bool writeOk = WriteAll(writeFd, data, dataLen);
+        const int32_t closeWriteRet = close(writeFd);
+        if (!writeOk || closeWriteRet != 0) {
+            OH_LOG_Print(LOG_APP, LOG_ERROR, 0xFF00, "MRP",
+                         "audio compressed temp write failed type=%{public}d path=%{public}s errno=%{public}d",
+                         type, path.c_str(), errno);
+            (void)unlink(path.c_str());
+            return MR_FAILED;
+        }
+
+        const int32_t readFd = open(path.c_str(), O_RDONLY);
+        if (readFd < 0) {
+            OH_LOG_Print(LOG_APP, LOG_ERROR, 0xFF00, "MRP",
+                         "audio compressed temp read failed type=%{public}d path=%{public}s errno=%{public}d",
+                         type, path.c_str(), errno);
+            (void)unlink(path.c_str());
+            return MR_FAILED;
+        }
+
+        OH_AVPlayer *player = OH_AVPlayer_Create();
+        if (player == nullptr) {
+            OH_LOG_Print(LOG_APP, LOG_ERROR, 0xFF00, "MRP", "audio avplayer create failed");
+            (void)close(readFd);
+            (void)unlink(path.c_str());
+            return MR_FAILED;
+        }
+
+        {
+            std::lock_guard<std::mutex> lock(mediaMutex_);
+            compressedPlayer_ = player;
+            compressedFd_ = readFd;
+            compressedPath_ = path;
+            compressedActiveType_ = type;
+            compressedLoop_ = loop != 0;
+            compressedStarted_ = false;
+        }
+
+        OH_AVErrCode ret = OH_AVPlayer_SetOnInfoCallback(player, &MrpAudioPlayer::MediaInfoCallback, this);
+        if (ret == AV_ERR_OK) {
+            ret = OH_AVPlayer_SetOnErrorCallback(player, &MrpAudioPlayer::MediaErrorCallback, this);
+        }
+        if (ret == AV_ERR_OK) {
+            ret = OH_AVPlayer_SetFDSource(player, readFd, 0, dataLen);
+        }
+        if (ret == AV_ERR_OK) {
+            (void)OH_AVPlayer_SetAudioRendererInfo(player, AUDIOSTREAM_USAGE_MUSIC);
+            (void)OH_AVPlayer_SetLooping(player, loop != 0);
+            ret = OH_AVPlayer_Prepare(player);
+        }
+        if (ret != AV_ERR_OK) {
+            OH_LOG_Print(LOG_APP, LOG_ERROR, 0xFF00, "MRP",
+                         "audio avplayer prepare failed type=%{public}d bytes=%{public}u ret=%{public}d",
+                         type, dataLen, ret);
+            StopCompressed(type);
+            return MR_FAILED;
+        }
+
+        OH_LOG_Print(LOG_APP, LOG_INFO, 0xFF00, "MRP",
+                     "audio avplayer prepare type=%{public}d bytes=%{public}u loop=%{public}d path=%{public}s",
+                     type, dataLen, loop, path.c_str());
+        return MR_SUCCESS;
+    }
+
+    std::string NextCompressedTempPath(int32_t type)
+    {
+        std::lock_guard<std::mutex> lock(mediaMutex_);
+        ++compressedSequence_;
+        char path[160] = {0};
+        (void)snprintf(path, sizeof(path), ".tmp/mrp_audio_%zu_type%d.%s",
+                       compressedSequence_, type, CompressedSoundExtension(type));
+        return std::string(path);
+    }
+
+    void StopRawPlayback()
+    {
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            active_ = false;
+            stopping_ = false;
+            position_ = 0;
+            loop_ = false;
+            samples_.clear();
+        }
+        if (renderer_ != nullptr && rendererStarted_) {
+            (void)OH_AudioRenderer_Stop(renderer_);
+            (void)OH_AudioRenderer_Flush(renderer_);
+            rendererStarted_ = false;
+        }
+    }
+
+    void StopCompressed(int32_t type)
+    {
+        OH_AVPlayer *player = nullptr;
+        int32_t fd = -1;
+        std::string path;
+        {
+            std::lock_guard<std::mutex> lock(mediaMutex_);
+            if (compressedPlayer_ == nullptr) {
+                return;
+            }
+            if (type >= 0 && type != compressedActiveType_) {
+                return;
+            }
+            player = compressedPlayer_;
+            fd = compressedFd_;
+            path = compressedPath_;
+            compressedPlayer_ = nullptr;
+            compressedFd_ = -1;
+            compressedPath_.clear();
+            compressedActiveType_ = -1;
+            compressedLoop_ = false;
+            compressedStarted_ = false;
+        }
+        (void)OH_AVPlayer_Stop(player);
+        (void)OH_AVPlayer_ReleaseSync(player);
+        if (fd >= 0) {
+            (void)close(fd);
+        }
+        if (!path.empty()) {
+            (void)unlink(path.c_str());
+        }
+    }
+
+    void OnMediaInfo(OH_AVPlayer *player, AVPlayerOnInfoType type, OH_AVFormat *infoBody)
+    {
+        if (type == AV_INFO_TYPE_EOS) {
+            OH_LOG_Print(LOG_APP, LOG_INFO, 0xFF00, "MRP", "audio avplayer eos");
+            return;
+        }
+        if (type != AV_INFO_TYPE_STATE_CHANGE) {
+            return;
+        }
+
+        int32_t stateValue = -1;
+        if (infoBody == nullptr || !OH_AVFormat_GetIntValue(infoBody, OH_PLAYER_STATE, &stateValue)) {
+            return;
+        }
+
+        bool shouldPlay = false;
+        bool loop = false;
+        {
+            std::lock_guard<std::mutex> lock(mediaMutex_);
+            if (player != compressedPlayer_) {
+                return;
+            }
+            if (stateValue == AV_PREPARED && !compressedStarted_) {
+                compressedStarted_ = true;
+                shouldPlay = true;
+                loop = compressedLoop_;
+            }
+        }
+        if (shouldPlay) {
+            (void)OH_AVPlayer_SetLooping(player, loop);
+            const OH_AVErrCode ret = OH_AVPlayer_Play(player);
+            OH_LOG_Print(LOG_APP, ret == AV_ERR_OK ? LOG_INFO : LOG_ERROR, 0xFF00, "MRP",
+                         "audio avplayer play ret=%{public}d loop=%{public}d", ret, loop ? 1 : 0);
+        }
+    }
+
+    void OnMediaError(OH_AVPlayer *player, int32_t errorCode, const char *errorMsg)
+    {
+        bool current = false;
+        {
+            std::lock_guard<std::mutex> lock(mediaMutex_);
+            current = player == compressedPlayer_;
+        }
+        if (current) {
+            OH_LOG_Print(LOG_APP, LOG_ERROR, 0xFF00, "MRP",
+                         "audio avplayer error code=%{public}d message=%{public}s",
+                         errorCode, errorMsg != nullptr ? errorMsg : "");
+        }
+    }
+
+    static void MediaInfoCallback(OH_AVPlayer *player, AVPlayerOnInfoType type, OH_AVFormat *infoBody, void *userData)
+    {
+        auto *self = static_cast<MrpAudioPlayer *>(userData);
+        if (self != nullptr) {
+            self->OnMediaInfo(player, type, infoBody);
+        }
+    }
+
+    static void MediaErrorCallback(OH_AVPlayer *player, int32_t errorCode, const char *errorMsg, void *userData)
+    {
+        auto *self = static_cast<MrpAudioPlayer *>(userData);
+        if (self != nullptr) {
+            self->OnMediaError(player, errorCode, errorMsg);
+        }
+    }
+
     bool EnsureRenderer()
     {
         if (renderer_ != nullptr) {
@@ -649,6 +907,15 @@ private:
     bool active_ = false;
     bool stopping_ = false;
     bool rendererStarted_ = false;
+
+    std::mutex mediaMutex_;
+    OH_AVPlayer *compressedPlayer_ = nullptr;
+    int32_t compressedFd_ = -1;
+    int32_t compressedActiveType_ = -1;
+    size_t compressedSequence_ = 0;
+    bool compressedLoop_ = false;
+    bool compressedStarted_ = false;
+    std::string compressedPath_;
 };
 
 MrpAudioPlayer g_audioPlayer;
