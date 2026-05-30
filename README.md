@@ -64,6 +64,7 @@ cp build-profile.json5.example build-profile.json5
 上游项目：
 
 - https://github.com/unicorn-engine/unicorn
+- https://github.com/chashaochang/unicorn-ohos
 
 具体看这里：
 
