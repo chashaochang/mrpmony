@@ -38,12 +38,6 @@ export class NativeAppAdapter {
   private static readonly MRP_DESCRIPTION_OFFSET: number = 128
   private static readonly MRP_DESCRIPTION_SIZE: number = 64
   private static readonly MRP_VERSION_OFFSET: number = 72
-  private static readonly HIDDEN_RUNTIME_MRPS: string[] = [
-    'dsm_gm.mrp',
-    'ydqtwo.mrp',
-    'mpc.mrp',
-    'flaengine.mrp'
-  ]
   private static readonly mrpTextDecoder: util.TextDecoder = util.TextDecoder.create('gbk', {
     fatal: false,
     ignoreBOM: true
@@ -66,7 +60,6 @@ export class NativeAppAdapter {
     console.info(`MRP list: ${mythroadDir} => ${files.join(',')}`)
     const appFiles = files
       .filter((name: string) => name.toLowerCase().endsWith('.mrp'))
-      .filter((name: string) => !this.isHiddenRuntimeMrp(name))
       .sort((a: string, b: string) => a.localeCompare(b))
     return this.buildInstalledAppsAsync(mythroadDir, appFiles)
   }
@@ -186,11 +179,6 @@ export class NativeAppAdapter {
       return false
     }
     return true
-  }
-
-  private isHiddenRuntimeMrp(fileName: string): boolean {
-    const lower = fileName.toLowerCase()
-    return NativeAppAdapter.HIDDEN_RUNTIME_MRPS.includes(lower)
   }
 
   private fileStat(filePath: string): fs.Stat | undefined {

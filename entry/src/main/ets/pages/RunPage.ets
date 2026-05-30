@@ -565,44 +565,52 @@ export struct RunPage {
 
   build() {
     Stack() {
-      Column() {
-        this.TopSafeGap()
-        if (this.errorMessage.length > 0) {
-          Text(this.errorMessage)
-            .fontSize(12)
-            .fontColor($r('sys.color.ohos_id_color_text_primary'))
-            .backgroundColor($r('app.color.app_danger_soft'))
-            .border({ width: 1, color: $r('app.color.app_surface_border') })
-            .borderRadius(16)
-            .padding({ left: 12, right: 12, top: 8, bottom: 8 })
-            .margin({ left: 18, right: 18, bottom: 8 })
+      if (this.destinationVisible) {
+        Column() {
+          this.TopSafeGap()
+          if (this.errorMessage.length > 0) {
+            Text(this.errorMessage)
+              .fontSize(12)
+              .fontColor($r('sys.color.ohos_id_color_text_primary'))
+              .backgroundColor($r('app.color.app_danger_soft'))
+              .border({ width: 1, color: $r('app.color.app_surface_border') })
+              .borderRadius(16)
+              .padding({ left: 12, right: 12, top: 8, bottom: 8 })
+              .margin({ left: 18, right: 18, bottom: 8 })
+          }
+          RuntimeContainer({
+            hint: this.runtimeHint,
+            hasFrame: this.hasFrame,
+            firstFrameWaitExpired: this.firstFrameWaitExpired,
+            frameId: this.frameId,
+            frameWidth: this.frameWidth,
+            frameHeight: this.frameHeight,
+            runtimeFps: this.runtimeFps,
+            keypadMode: this.keypadMode,
+            scalePercent: this.scalePercent,
+            showFrameStats: this.showFrameStats
+          })
         }
-        RuntimeContainer({
-          hint: this.runtimeHint,
-          hasFrame: this.hasFrame,
-          firstFrameWaitExpired: this.firstFrameWaitExpired,
-          frameId: this.frameId,
-          frameWidth: this.frameWidth,
-          frameHeight: this.frameHeight,
-          runtimeFps: this.runtimeFps,
-          keypadMode: this.keypadMode,
-          scalePercent: this.scalePercent,
-          showFrameStats: this.showFrameStats
+        .width('100%')
+        .height('100%')
+        .linearGradient({
+          angle: 180,
+          colors: [
+            [$r('app.color.home_background_start'), 0.0],
+            [$r('app.color.home_background_mid'), 0.52],
+            [$r('app.color.home_background_end'), 1.0]
+          ]
         })
+        .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.TOP, SafeAreaEdge.BOTTOM])
+      } else {
+        Blank()
+          .width('100%')
+          .height('100%')
       }
-      .width('100%')
-      .height('100%')
-      .linearGradient({
-        angle: 180,
-        colors: [
-          [$r('app.color.home_background_start'), 0.0],
-          [$r('app.color.home_background_mid'), 0.52],
-          [$r('app.color.home_background_end'), 1.0]
-        ]
-      })
-      .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.TOP, SafeAreaEdge.BOTTOM])
 
-      this.RuntimeEditOverlay()
+      if (this.destinationVisible) {
+        this.RuntimeEditOverlay()
+      }
     }
     .width('100%')
     .height('100%')

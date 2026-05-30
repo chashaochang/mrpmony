@@ -53,6 +53,13 @@ static void hook_mem_valid(uc_engine *uc, uc_mem_type type, uint64_t address, in
 static bool hook_mem_invalid(uc_engine *uc, uc_mem_type type, uint64_t address, int size, int64_t value, void *user_data) {
     printf(">>> Tracing mem_invalid mem_type:%s at 0x%" PRIx64 ", size:0x%x, value:0x%" PRIx64 "\n",
            memTypeStr(type), address, size, value);
+    uint32_t pc = 0;
+    uint32_t lr = 0;
+    uint32_t sp = 0;
+    uc_reg_read(uc, UC_ARM_REG_PC, &pc);
+    uc_reg_read(uc, UC_ARM_REG_LR, &lr);
+    uc_reg_read(uc, UC_ARM_REG_SP, &sp);
+    printf(">>> mem_invalid ctx pc=0x%08X lr=0x%08X sp=0x%08X\n", pc, lr, sp);
     dumpREG(uc);
     return false;
 }

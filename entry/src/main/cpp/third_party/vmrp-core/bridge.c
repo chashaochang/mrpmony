@@ -3752,6 +3752,7 @@ end:
 
 static uc_err runCode(uc_engine *uc, uint32_t startAddr, uint32_t stopAddr, bool isThumb) {
     g_bridgeLastErr = UC_ERR_OK;
+    printf("runCode start=0x%08X stop=0x%08X thumb=%d\n", startAddr, stopAddr, isThumb ? 1 : 0);
     uc_reg_write(uc, UC_ARM_REG_LR, &stopAddr);  // 当程序执行到这里时停止运行(return)
 
     // Note we start at ADDRESS | 1 to indicate THUMB mode.
@@ -3759,12 +3760,15 @@ static uc_err runCode(uc_engine *uc, uint32_t startAddr, uint32_t stopAddr, bool
     uc_err err = uc_emu_start(uc, startAddr, stopAddr, 0, 0);  // 似乎unicorn 1.0.2之前并不会在pc==stopAddr时立即停止
     if (err) {
         printf("Failed on uc_emu_start() with error returned: %u (%s)\n", err, uc_strerror(err));
+        dumpREG(uc);
         bridgeSetLastErr(err, "bridge runCode failed");
         return err;
     }
     if (g_bridgeLastErr != UC_ERR_OK) {
+        dumpREG(uc);
         return g_bridgeLastErr;
     }
+    dumpREG(uc);
     return UC_ERR_OK;
 }
 
@@ -3806,12 +3810,17 @@ uc_err bridge_ext_init(uc_engine *uc) {
         return err;
     }
 
-    v = 1;  // 传参数1 使用mr_extHelper，因为mr_helper会有刷屏操作
+    // Upstream notes only document fixR9 coverage for mr_c_function_load(0).
+    // On OHOS the code=1 ext/plugin path currently crashes inside Unicorn TCG
+    // during bridge_ext_init, so prefer the base helper init path first.
+    v = 0;
     err = uc_reg_write(uc, UC_ARM_REG_R0, &v);
     if (err != UC_ERR_OK) {
         bridgeSetLastErr(err, "bridge set ext init arg failed");
         return err;
     }
+    printf("bridge_ext_init mr_table=0x%08X code=0 helper_addr=0x%08X\n", toMrpMemAddr(mr_table), mr_extHelper_addr);
+    dumpREG(uc);
 
     // 执行ext内的mr_c_function_load()
     err = runCode(uc, CODE_ADDRESS + 8, CODE_ADDRESS, false);
@@ -3820,7 +3829,13 @@ uc_err bridge_ext_init(uc_engine *uc) {
     }
 
     // mr_c_function.start_of_ER_RW 会被写入r9(SB)，指向的内存是用来存放全局变量的
-    printf("-----> r9:@%p\n", mr_c_function_P->start_of_ER_RW);
+    printf("bridge_ext_init ok helper_addr=0x%08X er_rw=%p er_rw_len=%u ext_type=%d ext_chunk=%p stack=%d\n",
+           mr_extHelper_addr,
+           mr_c_function_P->start_of_ER_RW,
+           (unsigned)mr_c_function_P->ER_RW_Length,
+           (int)mr_c_function_P->ext_type,
+           mr_c_function_P->mrc_extChunk,
+           (int)mr_c_function_P->stack);
     return UC_ERR_OK;
 }
 
